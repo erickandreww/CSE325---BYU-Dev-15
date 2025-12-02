@@ -1,0 +1,47 @@
+@page "/categories/create"
+@attribute [Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using HobbyCollectionsTracker.Data
+@using HobbyCollectionsTracker.Models
+@using System.Threading.Tasks
+@inject ApplicationDbContext Db
+@inject NavigationManager Nav
+
+@* Crete Category Page *@
+
+<h1>Create Category</h1>
+
+@* Form to Create a category *@
+<EditForm Model="@category" OnValidSubmit="HandleValidSubmit">
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+  
+  @* To insert the new category name *@
+  <div class="mb=3">
+    <label for="name" class="form-label">Name</label>
+    <div>
+      <InputText id="name" class="form-control" @bind-Value="category.Name" />
+      <ValidationMessage For="@(() => category.Name)" />
+    </div>
+  </div>
+  
+  @* Submit to database button *@
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a class="btn btn-secondary ms-2" href="/categories">Cancel</a>
+</EditForm>
+
+@code {
+    private Category category = new();
+    // bool isError = false; // SEARCH THIS KIND OF VALIDATION IN THE CHECKOUT.RAZOR
+    private async Task HandleValidSubmit(EditContext args)
+    {
+      Db.Categories.Add(category);
+      await Db.SaveChangesAsync();
+      Nav.NavigateTo("/categories");
+    }
+    @* private void ShowError(EditContext args)
+    {
+      isError = true;
+    } *@
+}
