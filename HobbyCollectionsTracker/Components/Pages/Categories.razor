@@ -1,0 +1,83 @@
+@page "/categories"
+@attribute [Authorize]
+@* @using HobbyCollectionsTracker.Components.Layout
+@layout MainLayout *@
+
+@using HobbyCollectionsTracker.Data
+@using HobbyCollectionsTracker.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext Db
+
+@* Categories Page *@
+
+<h1>Categories</h1>
+
+<p>
+    <a class="btn btn-primary" href="/categories/create">Create New Category</a>
+</p>
+
+@if (categories == null) // this will show while categories load
+{
+  <p>Loading...</p>
+}
+else if (!categories.Any()) // If there's no category
+{
+  <p>No categories yet. Create one to get started.</p>
+}
+else // If there's category, this will show all the categories
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    @foreach (var category in categories)
+    {
+      <tr>
+        <td>@category.Name</td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-secondary"
+            href="/categories/edit/@category.Id">Edit</a>
+          <button class="btn btn-sm btn-danger ms-2"
+              @onclick="@(() => DeleteCategory(category.Id))">
+            Delete
+          </button>
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+}
+
+@code {
+  private List<Category>? categories;
+
+  // load categories from database when initialize
+  protected override async Task OnInitializedAsync()
+  {
+    categories = await Db.Categories
+      .OrderBy(c => c.Name)
+      .ToListAsync();
+  }
+
+  // delete category option
+  private async Task DeleteCategory(int id)
+  {
+    var category = await Db.Categories.FindAsync(id);
+    if (category is null)
+    {
+      return;
+    }
+
+    Db.Categories.Remove(category);
+    await Db.SaveChangesAsync();
+
+    // Reload the list
+    categories = await Db.Categories
+      .OrderBy(c => c.Name)
+      .ToListAsync();
+  }
+}
