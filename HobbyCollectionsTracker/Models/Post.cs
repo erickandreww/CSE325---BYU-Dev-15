@@ -26,7 +26,6 @@ public class Post
   public Category? Category { get; set; } 
 
   // Relation with User
-  [Required]
   public string UserId { get; set; } = string.Empty;
 
   // public IdentityUser? User { get; set; }

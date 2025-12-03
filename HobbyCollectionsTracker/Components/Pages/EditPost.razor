@@ -1,0 +1,116 @@
+@page "/posts/edit/{Id:int}"
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@using System.ComponentModel.DataAnnotations
+@using HobbyCollectionsTracker.Data
+@using HobbyCollectionsTracker.Models
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+
+@inject ApplicationDbContext Db
+@inject NavigationManager Nav
+
+<CascadingAuthenticationState>
+  @if (isLoading) {
+    <p>Loading...</p>
+  }
+  else if (notFound) {
+    <div class="alert alert-danger">
+      Post not found or you don't have permission to edit it.
+    </div>
+    <a class="btn btn-secondary" href="/posts/mine">Back to My Posts</a>
+  }
+  else if (post != null && categories != null) {
+    <EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
+      <DataAnnotationsValidator />
+      <ValidationSummary /> 
+
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <div>
+          <InputText id="title" class="form-control"  @bind-Value="post.Title" />
+          <ValidationMessage For="@(() => post.Title)" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <div>
+          <InputTextArea id="description" class="form-control" rows="4" 
+            @bind-Value="post.Description" />
+          <ValidationMessage For="@(() => post.Description)" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <div>
+          <InputSelect id="category" class="form-select" @bind-Value="post.CategoryId">
+            @foreach (var cat in categories) 
+            {
+              <option value="@cat.Id">@cat.Name</option>
+            }
+          </InputSelect>
+          <ValidationMessage For="@(() => post.Title)" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="imageUrl" class="form-label">Image URL (optional)</label>
+        <div>
+          <InputText id="imageUrl" class="form-control"  @bind-Value="post.ImageUrl" />
+          <ValidationMessage For="@(() => post.ImageUrl)" />
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a class="btn btn-secondary ms-2" href="/posts/mine">Cancel</a>
+    </EditForm>
+  }
+</CascadingAuthenticationState>
+
+@code {
+  public int Id { get; set; }
+  private Post? post;
+  private List<Category>? categories;
+  private bool isLoading = true;
+  private bool notFound = false;
+  private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+  protected override async Task OnInitializedAsync() {
+    var authState = await AuthenticationStateTask;
+    var user = authState.User;
+
+    if (!user.Identity?.IsAuthenticated ?? true)
+    {
+      Nav.NavigateTo("Identity/Account/Login", true);
+      return;
+    }
+
+    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    if (string.IsNullOrEmpty(userId))
+    {
+      notFound = true;
+      isLoading = false;
+      return;
+    }
+
+    categories = await Db.Categories
+      .OrderBy(c => c.Name)
+      .ToListAsync();
+
+    post = await Db.Posts.FindAsync(Id);
+
+    if (post == null || post.UserId != userId)
+    {
+      notFound = true;
+    }
+
+    isLoading = false;
+  }
+  private void HandleValidSubmit(EditContext args)
+  {
+    throw new NotImplementedException();
+  }
+}
