@@ -1,0 +1,108 @@
+@page "/posts/mine"
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@using HobbyCollectionsTracker.Models
+@using HobbyCollectionsTracker.Data
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@inject ApplicationDbContext Db
+@inject NavigationManager Nav
+
+<CascadingAuthenticationState>
+  <h2>My Posts</h2>
+  @if (isLoading) {
+    <p>Loading...</p>
+  }
+  else if (!posts.Any()){
+    <p>
+      You haven't created any posts yet. 
+      <a href="/posts/create">Create your first post</a>
+    </p>
+  }
+  else {
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Created</th>
+          <th></th>
+        </tr>
+      </thead>
+    </table>
+    <tbody>
+      @foreach (var post in posts) 
+      {
+        <tr>
+          <td>@post.Title</td>
+          <td>@post.Category?.Name</td>
+          <td>@post.CreatedAt.ToLocalTime().ToString("g")</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-secondary" 
+              href="/post/edit/@post.Id">
+              Edit
+            </a>
+            <button class="btn btn-sm btn-danger ms-2"
+              @onclick="() => DeletePost(post.Id)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  }
+</CascadingAuthenticationState>
+
+@code {
+  private List<Post> posts = new();
+    private bool isLoading = true;
+
+  [CascadingParameter]
+  private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+  
+  protected override async Task OnInitializedAsync()
+  {
+    var authState = await AuthenticationStateTask;
+    var user = authState.User;
+
+    if (!user.Identity?.IsAuthenticated ?? true)
+    {
+      Nav.NavigateTo("Identity/Account/Login", true);
+      return;
+    }
+
+    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    if (string.IsNullOrEmpty(userId))
+    {
+      Nav.NavigateTo("Identity/Account/Login", true);
+      return;
+    }
+
+    posts = await Db.Posts
+      .Where(p => p.UserId == userId)
+      .Include(p => p.Category)
+      .OrderByDescending(p => p.CreatedAt)
+      .ToListAsync();
+
+    isLoading = false; 
+  }
+
+  private async Task DeletePost(int id)
+  {
+    var authState = await AuthenticationStateTask;
+    var user = authState.User;
+    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    
+    var post = await Db.Posts.FindAsync(id);
+    if (post == null || post.UserId != userId)
+    {
+      return;
+    }
+
+    Db.Posts.Remove(post);
+    await Db.SaveChangesAsync();
+
+    posts.RemoveAll(p => p.Id == id);
+  }
+}
