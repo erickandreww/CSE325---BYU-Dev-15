@@ -15,7 +15,7 @@ public class Post
 
   [Url]
   [Display(Name = "Image URL")]
-  public string ImageUrl { get; set; } = string.Empty; //
+  public string? ImageUrl { get; set; }
 
   [Required, Display(Name = "Created At")]
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
