@@ -1,5 +1,6 @@
 @page "/categories/create"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
 
 @using System.ComponentModel.DataAnnotations
 @using HobbyCollectionsTracker.Data
@@ -18,7 +19,7 @@
   <ValidationSummary />
   
   @* To insert the new category name *@
-  <div class="mb=3">
+  <div class="mb-3">
     <label for="name" class="form-label">Name</label>
     <div>
       <InputText id="name" class="form-control" @bind-Value="category.Name" />
@@ -33,15 +34,10 @@
 
 @code {
     private Category category = new();
-    // bool isError = false; // SEARCH THIS KIND OF VALIDATION IN THE CHECKOUT.RAZOR
-    private async Task HandleValidSubmit(EditContext args)
+    private async Task HandleValidSubmit()
     {
       Db.Categories.Add(category);
       await Db.SaveChangesAsync();
       Nav.NavigateTo("/categories");
     }
-    @* private void ShowError(EditContext args)
-    {
-      isError = true;
-    } *@
 }

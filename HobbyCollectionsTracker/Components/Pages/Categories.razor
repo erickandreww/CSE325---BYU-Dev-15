@@ -1,5 +1,5 @@
 @page "/categories"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 @* @using HobbyCollectionsTracker.Components.Layout
 @layout MainLayout *@
 
