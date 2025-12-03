@@ -1,5 +1,6 @@
-@page "/post/create"
+@page "/posts/create"
 @attribute [Authorize]
+@rendermode InteractiveServer
 
 @using HobbyCollectionsTracker.Data
 @using HobbyCollectionsTracker.Models
@@ -24,7 +25,7 @@
     </div>
   }
   else {
-    <EditForm OnValidSubmit="HandleValidSubmit">
+    <EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
       <DataAnnotationsValidator />
       <ValidationSummary /> 
 
@@ -89,7 +90,7 @@
 
     if (categories.Any())
     {
-        post.CategoryId = categories.First().Id;
+      post.CategoryId = categories.First().Id;
     }
   }
   private async Task HandleValidSubmit(EditContext args)
