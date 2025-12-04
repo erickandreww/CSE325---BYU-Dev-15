@@ -49,3 +49,40 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+/* body {
+    background-color: var(--hh-bg);
+    color: var(--hh-text);
+}
+
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: var(--hh-primary);
+    border-color: var(--hh-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--hh-primary-dark);
+    border-color: var(--hh-primary-dark);
+}
+
+.btn-outline-secondary {
+    color: var(--hh-primary);
+    border-color: var(--hh-primary);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+    background-color: var(--hh-primary);
+    color: #ffffff;
+} */
