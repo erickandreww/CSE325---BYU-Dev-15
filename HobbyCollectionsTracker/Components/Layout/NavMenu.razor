@@ -1,4 +1,6 @@
-﻿@implements IDisposable
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveServer
+@implements IDisposable
 
 @inject NavigationManager NavigationManager
 
@@ -23,7 +25,15 @@
                 Feed
             </NavLink>
         </div>
-
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="categories">
+                        Categories
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
@@ -63,15 +73,6 @@
                     </NavLink>
                 </div>
             </NotAuthorized>
-        </AuthorizeView>
-        <AuthorizeView Roles="Admin">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="categories">
-                        Categories
-                    </NavLink>
-                </div>
-            </Authorized>
         </AuthorizeView>
     </nav>
 </div>
