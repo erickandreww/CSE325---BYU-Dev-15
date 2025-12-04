@@ -1,6 +1,19 @@
 ﻿@inherits LayoutComponentBase
+@using HobbyCollectionsTracker.Components.Account
 
 <div class="page">
+
+    <header class="hh-header">
+        <div class="hh-header-left">
+            <img src="images/logo.ico" alt="HobbyHub logo" class="hh-logo" />
+            <h1 class="hh-title">HCT - Hobby Collections Tracker</h1>
+        </div>
+
+        <div class="hh-header-right">
+            <LoginDisplay />
+        </div>
+    </header>
+
     <div class="sidebar">
         <NavMenu />
     </div>
