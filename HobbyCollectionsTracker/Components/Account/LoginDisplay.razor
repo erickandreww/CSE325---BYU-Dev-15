@@ -1,5 +1,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveServer
+@implements IDisposable
+@inject NavigationManager NavigationManager
 
 <AuthorizeView>
     <Authorized>
@@ -8,11 +10,13 @@
         </span>
 
         @* POST to the logout endpoint provided by Identity *@
-        <form method="post" action="Account/Logout" class="d-inline">
-            <button type="submit" class="btn btn-link p-0 align-baseline">
-                Logout
-            </button>
-        </form>
+            <form action="Account/Logout" method="post" class="d-inline">
+                <AntiforgeryToken />
+                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                <button type="submit" class="btn btn-outline-secondary ms-2">
+                    Logout
+                </button>
+            </form> 
     </Authorized>
 
     <NotAuthorized>
@@ -24,3 +28,24 @@
         </a>
     </NotAuthorized>
 </AuthorizeView>
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}
