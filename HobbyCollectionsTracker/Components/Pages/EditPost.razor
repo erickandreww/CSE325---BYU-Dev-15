@@ -7,25 +7,33 @@
 @using HobbyCollectionsTracker.Models
 @using Microsoft.EntityFrameworkCore
 @using System.Security.Claims
+@using System.Threading.Tasks
 
 @inject ApplicationDbContext Db
 @inject NavigationManager Nav
 
+@* Edit Post page *@
 <CascadingAuthenticationState>
+  <h2>Edit Post</h2>
+
+  @* Handle loading and error states first *@
   @if (isLoading) {
     <p>Loading...</p>
   }
   else if (notFound) {
+    @* Either the post doesn't exist or doesn't belong to this user *@
     <div class="alert alert-danger">
       Post not found or you don't have permission to edit it.
     </div>
     <a class="btn btn-secondary" href="/posts/mine">Back to My Posts</a>
   }
   else if (post != null && categories != null) {
+    @* Main edit form for an existing post *@
     <EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
       <DataAnnotationsValidator />
       <ValidationSummary /> 
 
+      @* Title *@
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <div>
@@ -34,6 +42,7 @@
         </div>
       </div>
 
+      @* Description *@
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <div>
@@ -43,6 +52,7 @@
         </div>
       </div>
 
+      @* Category dropdown (user can change the category) *@
       <div class="mb-3">
         <label for="category" class="form-label">Category</label>
         <div>
@@ -52,10 +62,11 @@
               <option value="@cat.Id">@cat.Name</option>
             }
           </InputSelect>
-          <ValidationMessage For="@(() => post.Title)" />
+          <ValidationMessage For="@(() => post.CategoryId)" />
         </div>
       </div>
 
+       @* Optional image URL *@
       <div class="mb-3">
         <label for="imageUrl" class="form-label">Image URL (optional)</label>
         <div>
@@ -63,7 +74,8 @@
           <ValidationMessage For="@(() => post.ImageUrl)" />
         </div>
       </div>
-      
+
+      @* Save changes or go back without saving *@
       <button type="submit" class="btn btn-primary">Save</button>
       <a class="btn btn-secondary ms-2" href="/posts/mine">Cancel</a>
     </EditForm>
@@ -71,13 +83,23 @@
 </CascadingAuthenticationState>
 
 @code {
+  [Parameter]
   public int Id { get; set; }
+  // The post being edited
   private Post? post;
+  // All categories for the dropdown
   private List<Category>? categories;
+  // Simple flags for UI state
   private bool isLoading = true;
   private bool notFound = false;
+
+  // Gives access to the current logged-in user
+  [CascadingParameter]
   private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 
+  // Check the user is logged in
+  // Load categories
+  // Load the post and make sure it belongs to this user
   protected override async Task OnInitializedAsync() {
     var authState = await AuthenticationStateTask;
     var user = authState.User;
@@ -109,8 +131,12 @@
 
     isLoading = false;
   }
-  private void HandleValidSubmit(EditContext args)
+
+  // When the form passes validation and the user clicks Save,
+  // EF is already tracking the entity, so we just save changes.
+  private async Task HandleValidSubmit(EditContext args)
   {
-    throw new NotImplementedException();
+    await Db.SaveChangesAsync();
+    Nav.NavigateTo("/posts/mine");
   }
 }
