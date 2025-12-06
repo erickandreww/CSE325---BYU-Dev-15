@@ -10,7 +10,6 @@
 @inject NavigationManager Nav
 
 @* Crete Category Page *@
-
 <h2>Create Category</h2>
 
 @* Form to Create a category *@
@@ -33,11 +32,14 @@
 </EditForm>
 
 @code {
-    private Category category = new();
-    private async Task HandleValidSubmit()
-    {
-      Db.Categories.Add(category);
-      await Db.SaveChangesAsync();
-      Nav.NavigateTo("/categories");
-    }
+  private Category category = new();
+
+  // Called when the Create Post form passes validation.
+  // Sets the current user as the owner of the post and saves it to the database.
+  private async Task HandleValidSubmit()
+  {
+    Db.Categories.Add(category);
+    await Db.SaveChangesAsync();
+    Nav.NavigateTo("/categories");
+  }
 }

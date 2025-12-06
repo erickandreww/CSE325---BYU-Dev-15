@@ -9,8 +9,11 @@
 @inject ApplicationDbContext Db
 @inject NavigationManager Nav
 
+@* My Posts page *@
 <CascadingAuthenticationState>
   <h2>My Posts</h2>
+
+  @* Handle loading and empty states *@
   @if (isLoading) {
     <p>Loading...</p>
   }
@@ -21,6 +24,7 @@
     </p>
   }
   else {
+    @* Table with all posts owned by the current user *@
     <table class="table">
       <thead>
         <tr>
@@ -40,9 +44,10 @@
           <td>@post.CreatedAt.ToLocalTime().ToString("g")</td>
           <td class="text-end">
             <a class="btn btn-sm btn-secondary" 
-              href="/post/edit/@post.Id">
+              href="/posts/edit/@post.Id">
               Edit
             </a>
+            @* Delete removes the post after checking ownership again *@
             <button class="btn btn-sm btn-danger ms-2"
               @onclick="() => DeletePost(post.Id)">
               Delete
@@ -55,12 +60,18 @@
 </CascadingAuthenticationState>
 
 @code {
+  // List of posts that belong to the current user
   private List<Post> posts = new();
-    private bool isLoading = true;
 
+  // True while we're still loading data from the database
+  private bool isLoading = true;
+  
+  // Used to get the current AuthenticationState with the logged-in user
   [CascadingParameter]
   private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
   
+  // Make sure the user is logged in
+  // Load only posts that belong to this user
   protected override async Task OnInitializedAsync()
   {
     var authState = await AuthenticationStateTask;
@@ -88,21 +99,27 @@
     isLoading = false; 
   }
 
+  // Called when the user clicks Delete on a specific post.
+  // re-check ownership on the server before actually deleting.
   private async Task DeletePost(int id)
   {
     var authState = await AuthenticationStateTask;
     var user = authState.User;
     var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     
+    // Load the post from the database
     var post = await Db.Posts.FindAsync(id);
+    // If the post doesn't exist or doesn't belong to this user
     if (post == null || post.UserId != userId)
     {
       return;
     }
 
+    // Remove from database and save
     Db.Posts.Remove(post);
     await Db.SaveChangesAsync();
 
+    // Also remove from the local list so the UI updates
     posts.RemoveAll(p => p.Id == id);
   }
 }

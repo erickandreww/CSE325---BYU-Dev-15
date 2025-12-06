@@ -40,7 +40,7 @@ else {
 
     public Category? category;
     
-    // get the category from database
+    // Get the category
     protected override async Task OnInitializedAsync()
     {
         category = await Db.Categories.FindAsync(Id);
@@ -49,6 +49,7 @@ else {
         }
     }
 
+    // Sets the current alteration and saves it to the Database
     private async Task HandleValidSubmit(EditContext args)
     {
         await Db.SaveChangesAsync();

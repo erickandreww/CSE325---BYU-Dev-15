@@ -1,5 +1,5 @@
 @page "/posts/create"
-@attribute [Authorize]
+@attribute [Authorize] 
 @rendermode InteractiveServer
 
 @using HobbyCollectionsTracker.Data
@@ -13,22 +13,28 @@
 @inject NavigationManager Nav
 
 
+@* Create Post page *@
 <CascadingAuthenticationState>
   <h2>Create Post</h2>
 
-  @if (categories == null) {
-      <p>Loading...</p>
+  @* Handle the different states for categories *@
+  @if (categories == null) { 
+    @* Still loading categories from the database *@
+    <p>Loading...</p>
   }
   else if (!categories.Any()) {
+    @* No categories at all = user can’t create posts yet *@
     <div class="alert alert-warning">
       No categories found. Please ask an administrator to create categories first.
     </div>
   }
   else {
+    @* Main form used to create a new post *@
     <EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
       <DataAnnotationsValidator />
       <ValidationSummary /> 
 
+      @* Post Title *@
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <div>
@@ -37,6 +43,7 @@
         </div>
       </div>
 
+      @* Post Description *@
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <div>
@@ -45,6 +52,7 @@
         </div>
       </div>
 
+      @* Category dropdown (links to CategoryId on the Post) *@
       <div class="mb-3">
         <label for="category" class="form-label">Category</label>
         <div>
@@ -54,10 +62,11 @@
               <option value="@cat.Id">@cat.Name</option>
             }
           </InputSelect>
-          <ValidationMessage For="@(() => post.Title)" />
+          <ValidationMessage For="@(() => post.CategoryId)" />
         </div>
       </div>
 
+      @* Optional image URL (just a link, no upload) *@
       <div class="mb-3">
         <label for="imageUrl" class="form-label">Image URL (optional)</label>
         <div>
@@ -69,6 +78,7 @@
         </div>
       </div>
       
+      @* Save/cancel actions *@
       <button type="submit" class="btn btn-primary">Save</button>
       <a class="btn btn-secondary ms-2" href="/posts/mine">Cancel</a>
     </EditForm>
@@ -76,46 +86,60 @@
 </CascadingAuthenticationState>
 
 @code {
+  // Post being edited/created by this form
   private Post post = new Post();
+
+  // Categories used to fill the dropdown
   private List<Category>? categories;
 
+  // Gives access to the current logged-in user (Identity)
   [CascadingParameter]
   private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 
+  // When the page loads, grab all categories and set a default one
   protected override async Task OnInitializedAsync()
   {
     categories = await Db.Categories
       .OrderBy(c => c.Name)
       .ToListAsync();
 
+    // If there are categories, preselect the first one
     if (categories.Any())
     {
       post.CategoryId = categories.First().Id;
     }
   }
+
+  // Runs when the form passes validation and the user clicks Save
+  // Here we attach the current user to the post and save it in the database
   private async Task HandleValidSubmit(EditContext args)
   {
     var authState = await AuthenticationStateTask;
     var user = authState.User;
 
+     // If the user is not authenticated anymore, send to login
     if (!user.Identity?.IsAuthenticated ?? true)
     {
       Nav.NavigateTo("Identity/Account/Login", true);
       return;
     }
 
+    // Get the Identity user id (used as foreign key on the Post)
     var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     if (string.IsNullOrEmpty(userId))
     {
       return;
     }
 
+    // Set the owner and creation date
     post.UserId = userId;
     post.CreatedAt = DateTime.UtcNow;
 
+    // Add to the context and persist in the database
     Db.Posts.Add(post);
     await Db.SaveChangesAsync();
 
+    // Go back to the list of posts for this user
     Nav.NavigateTo("/posts/mine");
   }
 }
