@@ -1,5 +1,7 @@
 @page "/categories"
+@* Only admins can manage categories *@
 @attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
 @* @using HobbyCollectionsTracker.Components.Layout
 @layout MainLayout *@
 
@@ -8,23 +10,32 @@
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext Db
 
-@* Categories Page *@
-
+@* Categories management page (Admin only) *@
 <h2>Categories</h2>
 
 <p>
-    <a class="btn btn-primary" href="/categories/create">Create New Category</a>
+  @* Link to the Create Category page *@
+  <a class="btn btn-primary" href="/categories/create">Create New Category</a>
 </p>
 
-@if (categories == null) // this will show while categories load
+@* Show any delete/error message to the admin *@
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+  <div class="alert alert-danger">
+    @errorMessage
+  </div>
+}
+
+@* Handle loading / empty / normal states *@
+@if (categories == null) @* this will show while categories load *@
 {
   <p>Loading...</p>
 }
-else if (!categories.Any()) // If there's no category
+else if (!categories.Any()) @* If there are no categories yet *@
 {
   <p>No categories yet. Create one to get started.</p>
 }
-else // If there's category, this will show all the categories
+else @* If there are categories, show them in a table *@
 {
   <table class="table">
     <thead>
@@ -41,6 +52,8 @@ else // If there's category, this will show all the categories
         <td class="text-end">
           <a class="btn btn-sm btn-secondary"
             href="/categories/edit/@category.Id">Edit</a>
+          
+          @* Delete removes the category from the database (with safety checks)*@
           <button class="btn btn-sm btn-danger ms-2"
               @onclick="@(() => DeleteCategory(category.Id))">
             Delete
@@ -53,9 +66,13 @@ else // If there's category, this will show all the categories
 }
 
 @code {
+  // List of all categories loaded from the database
   private List<Category>? categories;
 
-  // load categories from database when initialize
+  // Store a simple error message if delete fails
+  private string? errorMessage;
+
+  // Load categories from the database when the page is initialized
   protected override async Task OnInitializedAsync()
   {
     categories = await Db.Categories
@@ -63,21 +80,43 @@ else // If there's category, this will show all the categories
       .ToListAsync();
   }
 
-  // delete category option
+  // Delete a category by id and refresh the list
   private async Task DeleteCategory(int id)
   {
+    errorMessage = null; // clear previous errors
+
+    // First check if any posts are using this category.
+    // If there are, we don't allow deleting it.
+    var inUse = await Db.Posts.AnyAsync(p => p.CategoryId == id);
+    if (inUse)
+    {
+      errorMessage = "You can't delete this category because there are posts using it. " +
+        "Change or delete those posts first.";
+      return;
+    }
+
+    // Look up the category in the database
     var category = await Db.Categories.FindAsync(id);
     if (category is null)
     {
       return;
     }
 
-    Db.Categories.Remove(category);
-    await Db.SaveChangesAsync();
+    try
+    {
+      // Remove from the database and save
+      Db.Categories.Remove(category);
+      await Db.SaveChangesAsync();
 
-    // Reload the list
-    categories = await Db.Categories
-      .OrderBy(c => c.Name)
-      .ToListAsync();
+      // Reload the list so the UI stays in sync
+      categories = await Db.Categories
+        .OrderBy(c => c.Name)
+        .ToListAsync();
+    }
+    catch (Exception ex)
+    {
+      // If something goes wrong (e.g., constraint issues), show a simple message
+      errorMessage = $"Could not delete category: {ex.Message}";
+    }
   }
 }
