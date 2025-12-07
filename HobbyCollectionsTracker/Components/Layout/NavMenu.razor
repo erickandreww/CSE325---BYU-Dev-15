@@ -1,30 +1,33 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
-@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Routing
 @implements IDisposable
 
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">HobbyCollectionsTracker</a>
-    </div>
+<div class="top-row">
+        <div class="navbar-brand">HCT</div>
+        <div class="text-muted small">Hobby Collections Tracker</div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<input id="navToggle" type="checkbox" title="Navigation menu" class="navbar-toggler"/>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<div class="nav-scrollable">
     <nav class="flex-column">
+        <!-- Home -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                Home
             </NavLink>
         </div>
-        
+
+        <!-- Feed -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="feed">
                 Feed
             </NavLink>
         </div>
+
+        <!-- Admin-only: Categories -->
         <AuthorizeView Roles="Admin">
             <Authorized>
                 <div class="nav-item px-3">
@@ -34,46 +37,53 @@
                 </div>
             </Authorized>
         </AuthorizeView>
+
+        <!-- Authenticated-only links -->
         <AuthorizeView>
-            <Authorized>
+            <Authorized Context="authContext">
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="posts/mine">
                         My Posts
                     </NavLink>
                 </div>
+
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="posts/create">
                         New Post
                     </NavLink>
                 </div>
+
+                @* User profile link (shows nicer display name) *@
+                @{
+                    var displayName = authContext.User.Identity?.Name;
+
+                    // If it's an email, show only the part before @
+                    if (!string.IsNullOrEmpty(displayName) && displayName.Contains("@"))
+                    {
+                        displayName = displayName.Split('@')[0];
+                    }
+                }
+
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true">@context.User.Identity?.Name</span>
+                    <NavLink class="nav-link hh-user-link" href="Account/Manage">
+                        @displayName
                     </NavLink>
                 </div>
-                @* DISCOMENT AFTER CHANGING THE STYLES *@
-                @* <div class="nav-item px-3">
+
+                @* 
+                  Optional logout button styled like the other nav items.
+                  Uncomment if/when you’re ready to use it.
+                *@
+                @*<div class="nav-item px-3">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
                         <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                            Logout
                         </button>
-                    </form> 
-                </div> *@
+                    </form>
+                </div>*@
             </Authorized>
-            @* <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
-            </NotAuthorized> *@
         </AuthorizeView>
     </nav>
 </div>
@@ -98,4 +108,3 @@
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
-
