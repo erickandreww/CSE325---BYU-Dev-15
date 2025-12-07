@@ -11,59 +11,71 @@
 @inject ApplicationDbContext Db
 
 @* Categories management page (Admin only) *@
-<h2>Categories</h2>
 
-<p>
-  @* Link to the Create Category page *@
-  <a class="btn btn-primary" href="/categories/create">Create New Category</a>
-</p>
+<div class="hh-page-container">
+  <h2 class="hh-page-title">Categories</h2>
 
-@* Show any delete/error message to the admin *@
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-  <div class="alert alert-danger">
-    @errorMessage
-  </div>
-}
+  <div class="hh-surface">
+    <div class="hh-surface-header">
+      <div class="hh-surface-header-text">
+        @* Short helper text for the admin *@
+        Manage the list of categories that users can pick when creating posts.
+      </div>
 
-@* Handle loading / empty / normal states *@
-@if (categories == null) @* this will show while categories load *@
-{
-  <p>Loading...</p>
-}
-else if (!categories.Any()) @* If there are no categories yet *@
-{
-  <p>No categories yet. Create one to get started.</p>
-}
-else @* If there are categories, show them in a table *@
-{
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    @foreach (var category in categories)
+      <p class="mb-0">
+        @* Link to the Create Category page *@
+        <a class="btn btn-primary" href="/categories/create">Create New Category</a>
+      </p>
+    </div>
+
+    @* Show any delete/error message to the admin *@
+    @if (!string.IsNullOrEmpty(errorMessage))
     {
-      <tr>
-        <td>@category.Name</td>
-        <td class="text-end">
-          <a class="btn btn-sm btn-secondary"
-            href="/categories/edit/@category.Id">Edit</a>
-          
-          @* Delete removes the category from the database (with safety checks)*@
-          <button class="btn btn-sm btn-danger ms-2"
-              @onclick="@(() => DeleteCategory(category.Id))">
-            Delete
-          </button>
-        </td>
-      </tr>
+      <div class="alert alert-danger">
+        @errorMessage
+      </div>
     }
-    </tbody>
-  </table>
-}
+
+    @* Handle loading / empty / normal states *@
+    @if (categories == null) @* this will show while categories load *@
+    {
+      <p>Loading...</p>
+    }
+    else if (!categories.Any()) @* If there are no categories yet *@
+    {
+      <p>No categories yet. Create one to get started.</p>
+    }
+    else @* If there are categories, show them in a table *@
+    {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        @foreach (var category in categories)
+        {
+          <tr>
+            <td>@category.Name</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-secondary"
+                 href="/categories/edit/@category.Id">Edit</a>
+              
+              @* Delete removes the category from the database (with safety checks)*@
+              <button class="btn btn-sm btn-danger ms-2"
+                      @onclick="@(() => DeleteCategory(category.Id))">
+                Delete
+              </button>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
 
 @code {
   // List of all categories loaded from the database

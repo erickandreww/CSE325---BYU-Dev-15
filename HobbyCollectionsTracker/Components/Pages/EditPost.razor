@@ -14,72 +14,78 @@
 
 @* Edit Post page *@
 <CascadingAuthenticationState>
-  <h2>Edit Post</h2>
+  <div class="hh-page-container">
+    <h2 class="hh-page-title">Edit Post</h2>
 
-  @* Handle loading and error states first *@
-  @if (isLoading) {
-    <p>Loading...</p>
-  }
-  else if (notFound) {
-    @* Either the post doesn't exist or doesn't belong to this user *@
-    <div class="alert alert-danger">
-      Post not found or you don't have permission to edit it.
+    <div class="hh-surface">
+      @* Handle loading and error states first *@
+      @if (isLoading) {
+        <p>Loading...</p>
+      }
+      else if (notFound) {
+        @* Either the post doesn't exist or doesn't belong to this user *@
+        <div class="alert alert-danger">
+          Post not found or you don't have permission to edit it.
+        </div>
+        <a class="btn btn-secondary" href="/posts/mine">Back to My Posts</a>
+      }
+      else if (post != null && categories != null) {
+        @* Main edit form for an existing post *@
+        <EditForm Model="@post" OnValidSubmit="HandleValidSubmit" class="hh-form hh-form-narrow">
+          <DataAnnotationsValidator />
+          <ValidationSummary /> 
+
+          @* Title *@
+          <div class="mb-3 hh-form-row">
+            <label for="title" class="form-label hh-field-label">Title</label>
+            <div class="hh-field-control">
+              <InputText id="title" class="form-control"  @bind-Value="post.Title" />
+              <ValidationMessage For="@(() => post.Title)" />
+            </div>
+          </div>
+
+          @* Description *@
+          <div class="mb-3 hh-form-row">
+            <label for="description" class="form-label hh-field-label">Description</label>
+            <div class="hh-field-control">
+              <InputTextArea id="description" class="form-control" rows="4" 
+                             @bind-Value="post.Description" />
+              <ValidationMessage For="@(() => post.Description)" />
+            </div>
+          </div>
+
+          @* Category dropdown (user can change the category) *@
+          <div class="mb-3 hh-form-row">
+            <label for="category" class="form-label hh-field-label">Category</label>
+            <div class="hh-field-control">
+              <InputSelect id="category" class="form-select" @bind-Value="post.CategoryId">
+                @foreach (var cat in categories) 
+                {
+                  <option value="@cat.Id">@cat.Name</option>
+                }
+              </InputSelect>
+              <ValidationMessage For="@(() => post.CategoryId)" />
+            </div>
+          </div>
+
+          @* Optional image URL *@
+          <div class="mb-3 hh-form-row">
+            <label for="imageUrl" class="form-label hh-field-label">Image URL (optional)</label>
+            <div class="hh-field-control">
+              <InputText id="imageUrl" class="form-control"  @bind-Value="post.ImageUrl" />
+              <ValidationMessage For="@(() => post.ImageUrl)" />
+            </div>
+          </div>
+
+          @* Save changes or go back without saving *@
+          <div class="hh-form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a class="btn btn-secondary ms-2" href="/posts/mine">Cancel</a>
+          </div>
+        </EditForm>
+      }
     </div>
-    <a class="btn btn-secondary" href="/posts/mine">Back to My Posts</a>
-  }
-  else if (post != null && categories != null) {
-    @* Main edit form for an existing post *@
-    <EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
-      <DataAnnotationsValidator />
-      <ValidationSummary /> 
-
-      @* Title *@
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <div>
-          <InputText id="title" class="form-control"  @bind-Value="post.Title" />
-          <ValidationMessage For="@(() => post.Title)" />
-        </div>
-      </div>
-
-      @* Description *@
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <div>
-          <InputTextArea id="description" class="form-control" rows="4" 
-            @bind-Value="post.Description" />
-          <ValidationMessage For="@(() => post.Description)" />
-        </div>
-      </div>
-
-      @* Category dropdown (user can change the category) *@
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <div>
-          <InputSelect id="category" class="form-select" @bind-Value="post.CategoryId">
-            @foreach (var cat in categories) 
-            {
-              <option value="@cat.Id">@cat.Name</option>
-            }
-          </InputSelect>
-          <ValidationMessage For="@(() => post.CategoryId)" />
-        </div>
-      </div>
-
-       @* Optional image URL *@
-      <div class="mb-3">
-        <label for="imageUrl" class="form-label">Image URL (optional)</label>
-        <div>
-          <InputText id="imageUrl" class="form-control"  @bind-Value="post.ImageUrl" />
-          <ValidationMessage For="@(() => post.ImageUrl)" />
-        </div>
-      </div>
-
-      @* Save changes or go back without saving *@
-      <button type="submit" class="btn btn-primary">Save</button>
-      <a class="btn btn-secondary ms-2" href="/posts/mine">Cancel</a>
-    </EditForm>
-  }
+  </div>
 </CascadingAuthenticationState>
 
 @code {

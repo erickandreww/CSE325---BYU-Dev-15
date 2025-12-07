@@ -1,5 +1,5 @@
 @page "/posts/create"
-@attribute [Authorize] 
+@attribute [Authorize]
 @rendermode InteractiveServer
 
 @using HobbyCollectionsTracker.Data
@@ -15,74 +15,84 @@
 
 @* Create Post page *@
 <CascadingAuthenticationState>
-  <h2>Create Post</h2>
+  <div class="hh-page-container">
+    <h2 class="hh-page-title">Create Post</h2>
 
-  @* Handle the different states for categories *@
-  @if (categories == null) { 
-    @* Still loading categories from the database *@
-    <p>Loading...</p>
-  }
-  else if (!categories.Any()) {
-    @* No categories at all = user can’t create posts yet *@
-    <div class="alert alert-warning">
-      No categories found. Please ask an administrator to create categories first.
-    </div>
-  }
-  else {
-    @* Main form used to create a new post *@
-    <EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
-      <DataAnnotationsValidator />
-      <ValidationSummary /> 
-
-      @* Post Title *@
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <div>
-          <InputText id="title" class="form-control"  @bind-Value="post.Title" />
-          <ValidationMessage For="@(() => post.Title)" />
+    <div class="hh-surface">
+      @* Handle the different states for categories *@
+      @if (categories == null)
+      {
+        @* Still loading categories from the database *@
+        <p>Loading...</p>
+      }
+      else if (!categories.Any())
+      {
+        @* No categories at all = user can’t create posts yet *@
+        <div class="alert alert-warning mb-0">
+          No categories found. Please ask an administrator to create categories first.
         </div>
-      </div>
+      }
+      else
+      {
+        @* Main form used to create a new post *@
+        <EditForm Model="@post" OnValidSubmit="HandleValidSubmit" class="hh-form hh-form-narrow">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
 
-      @* Post Description *@
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <div>
-          <InputTextArea id="description" class="form-control" rows="4" @bind-Value="post.Description" />
-          <ValidationMessage For="@(() => post.Description)" />
-        </div>
-      </div>
-
-      @* Category dropdown (links to CategoryId on the Post) *@
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <div>
-          <InputSelect id="category" class="form-select" @bind-Value="post.CategoryId">
-            @foreach (var cat in categories) 
-            {
-              <option value="@cat.Id">@cat.Name</option>
-            }
-          </InputSelect>
-          <ValidationMessage For="@(() => post.CategoryId)" />
-        </div>
-      </div>
-
-      @* Optional image URL (just a link, no upload) *@
-      <div class="mb-3">
-        <label for="imageUrl" class="form-label">Image URL (optional)</label>
-        <div>
-          <InputText id="imageUrl" class="form-control"  @bind-Value="post.ImageUrl" />
-          <div class="form-text">
-            Paste a link to an existing image (for example, from an image host). Leave blank if you don't want an image.
+          @* Post Title *@
+          <div class="mb-3 hh-form-row">
+            <label for="title" class="form-label hh-field-label">Title</label>
+            <div class="hh-field-control">
+              <InputText id="title" class="form-control" @bind-Value="post.Title" />
+              <ValidationMessage For="@(() => post.Title)" />
+            </div>
           </div>
-          <ValidationMessage For="@(() => post.ImageUrl)" />
-        </div>
-      </div>
-      
-      @* Save/cancel actions *@
-      <button type="submit" class="btn btn-primary">Save</button>
-      <a class="btn btn-secondary ms-2" href="/posts/mine">Cancel</a>
-    </EditForm>
-  }
+
+          @* Post Description *@
+          <div class="mb-3 hh-form-row">
+            <label for="description" class="form-label hh-field-label">Description</label>
+            <div class="hh-field-control">
+              <InputTextArea id="description" class="form-control" rows="4" @bind-Value="post.Description" />
+              <ValidationMessage For="@(() => post.Description)" />
+            </div>
+          </div>
+
+          @* Category dropdown (links to CategoryId on the Post) *@
+          <div class="mb-3 hh-form-row">
+            <label for="category" class="form-label hh-field-label">Category</label>
+            <div class="hh-field-control">
+              <InputSelect id="category" class="form-select" @bind-Value="post.CategoryId">
+                @foreach (var cat in categories)
+                {
+                  <option value="@cat.Id">@cat.Name</option>
+                }
+              </InputSelect>
+              <ValidationMessage For="@(() => post.CategoryId)" />
+            </div>
+          </div>
+
+          @* Optional image URL (just a link, no upload) *@
+          <div class="mb-3 hh-form-row">
+            <label for="imageUrl" class="form-label hh-field-label">Image URL (optional)</label>
+            <div class="hh-field-control">
+              <InputText id="imageUrl" class="form-control" @bind-Value="post.ImageUrl" />
+              <div class="form-text">
+                Paste a link to an existing image (for example, from an image host).
+                Leave blank if you don't want an image.
+              </div>
+              <ValidationMessage For="@(() => post.ImageUrl)" />
+            </div>
+          </div>
+
+          @* Save/cancel actions *@
+          <div class="hh-form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a class="btn btn-secondary ms-2" href="/posts/mine">Cancel</a>
+          </div>
+        </EditForm>
+      }
+    </div>
+  </div>
 </CascadingAuthenticationState>
 
 @code {
@@ -117,7 +127,7 @@
     var authState = await AuthenticationStateTask;
     var user = authState.User;
 
-     // If the user is not authenticated anymore, send to login
+    // If the user is not authenticated anymore, send to login
     if (!user.Identity?.IsAuthenticated ?? true)
     {
       Nav.NavigateTo("Identity/Account/Login", true);
@@ -138,7 +148,7 @@
     // Make ImageUrl optional (avoid null going to a NOT NULL column)
     if (string.IsNullOrWhiteSpace(post.ImageUrl))
     {
-        post.ImageUrl = string.Empty;
+      post.ImageUrl = string.Empty;
     }
 
     // Add to the context and persist in the database

@@ -10,49 +10,54 @@
 @inject NavigationManager Nav
 
 @* Edit Category Page *@
-<h2>Edit Category</h2>
+<div class="hh-page-container">
+  <h2 class="hh-page-title">Edit Category</h2>
 
-@if (category == null) {
-    <p>Loading...</p>
-}
-else {
-    @* Form to Edit the selected category *@
-    <EditForm Model="@category" OnValidSubmit="HandleValidSubmit">
+  <div class="hh-surface">
+    @if (category == null) {
+      <p>Loading...</p>
+    }
+    else {
+      @* Form to Edit the selected category *@
+      <EditForm Model="@category" OnValidSubmit="HandleValidSubmit" class="hh-form-narrow">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
         
         <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <div>
-                <InputText id="name" class="form-control" @bind-Value="category.Name" />
-                <ValidationMessage For="@(() => category.Name)" />
-            </div>
-    </div>
+          <label for="name" class="form-label">Name</label>
+          <div>
+            <InputText id="name" class="form-control" @bind-Value="category.Name" />
+            <ValidationMessage For="@(() => category.Name)" />
+          </div>
+        </div>
+
         @* Submit edit to database button *@
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a class="btn btn-secondary ms-2" href="/categories">Cancel</a>
-    </EditForm>
-}
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-secondary ms-2" href="/categories">Cancel</a>
+      </EditForm>
+    }
+  </div>
+</div>
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
+  [Parameter]
+  public int Id { get; set; }
 
-    public Category? category;
-    
-    // Get the category
-    protected override async Task OnInitializedAsync()
-    {
-        category = await Db.Categories.FindAsync(Id);
-        if (category == null) {
-            Nav.NavigateTo("/categories");
-        }
+  public Category? category;
+  
+  // Get the category
+  protected override async Task OnInitializedAsync()
+  {
+    category = await Db.Categories.FindAsync(Id);
+    if (category == null) {
+      Nav.NavigateTo("/categories");
     }
+  }
 
-    // Sets the current alteration and saves it to the Database
-    private async Task HandleValidSubmit(EditContext args)
-    {
-        await Db.SaveChangesAsync();
-        Nav.NavigateTo("/categories");
-    }
+  // Sets the current alteration and saves it to the Database
+  private async Task HandleValidSubmit(EditContext args)
+  {
+    await Db.SaveChangesAsync();
+    Nav.NavigateTo("/categories");
+  }
 }
