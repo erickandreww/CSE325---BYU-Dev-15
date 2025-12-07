@@ -1,0 +1,91 @@
+@page "/posts/details/{Id:int}"
+@rendermode InteractiveServer
+
+@using HobbyCollectionsTracker.Models
+@using HobbyCollectionsTracker.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext Db
+@inject NavigationManager Nav
+
+@* Read-only Post Details page *@
+  <div class="hh-page-container">
+  <h2 class="hh-page-title">Post Details</h2>
+
+  @if (isLoading == true) {
+    <p>Loading...</p>
+  }
+  else if (notFound == true) {
+    @* Post id didn't match anything in the database *@
+    <div class="alert alert-danger">
+      Post not found.
+    </div>
+    <button class="btn btn-secondary" @onclick="GoBack">
+      Back
+    </button>
+  }
+  else {
+    @* Main details card for the post *@
+    <div>
+      @* Show only if the post has an ImageUrl *@
+      @if (!String.IsNullOrEmpty(post.ImageUrl))
+      {
+        <img src="@post.ImageUrl"
+          alt="@post.Title"
+          class="card-img-top"
+          style="object-fit: cover; max-height: 320px;" />
+      }
+
+      <div class="card-body">
+        <h3 class="card-title">@post.Title</h3>
+        <h6 class="card-subtitle mb-2 text muted">
+          @post.Category?.Name · @post.CreatedAt.ToLocalTime().ToString("g")
+        </h6>
+
+        <p class="card-text">@post.Description</p>
+      </div>
+    </div>
+    
+    @* Simple navigation buttons under the card *@
+    <button class="btn btn-secondary" @onclick="GoBack">
+      Back
+    </button>
+    <a class="btn btn-primary" href="/feed">
+      Go to Feed
+    </a>
+  }
+</div>
+
+
+@code {
+  // Id of the post
+  [Parameter]
+  public int Id { get; set; }
+
+  // Post loaded 
+  private Post? post;
+
+  // Flags for UI state
+  private bool isLoading = true;
+  private bool notFound = false;
+
+  // Grab the post (and its Category) from the DB
+  protected override async Task OnInitializedAsync()
+  {
+    post = await Db.Posts
+      .Include(p => p.Category)
+      .FirstOrDefaultAsync(p => p.Id == Id);
+    
+    if (post == null)
+    {
+      notFound = true;
+    }
+
+    isLoading = false;
+  }
+
+  // Simple "back" behavior: for now just send the user to the feed
+  private void GoBack()
+  {
+    Nav.NavigateTo("/feed");
+  }
+}
