@@ -135,6 +135,12 @@
     post.UserId = userId;
     post.CreatedAt = DateTime.UtcNow;
 
+    // Make ImageUrl optional (avoid null going to a NOT NULL column)
+    if (string.IsNullOrWhiteSpace(post.ImageUrl))
+    {
+        post.ImageUrl = string.Empty;
+    }
+
     // Add to the context and persist in the database
     Db.Posts.Add(post);
     await Db.SaveChangesAsync();
