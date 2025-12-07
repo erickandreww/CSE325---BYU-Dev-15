@@ -2,60 +2,75 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
 main {
     flex: 1;
 }
 
+/* Sidebar: flat dark panel instead of default gradient */
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background: radial-gradient(circle at top left, #1f2937, #020617);
+    color: #e5e7eb;
 }
 
+/* Top row inside layout (not your global header) */
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
+    background-color: transparent;
+    border-bottom: none;
     justify-content: flex-end;
     height: 3.5rem;
     display: flex;
     align-items: center;
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
+/* Links in top-row (like "About") */
+.top-row ::deep a,
+.top-row ::deep .btn-link {
+    white-space: nowrap;
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
 
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
+.top-row ::deep a:hover,
+.top-row ::deep .btn-link:hover {
+    color: #111827;
+    text-decoration: underline;
+}
 
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+.top-row ::deep a:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
+/* Small screens */
 @media (max-width: 640.98px) {
     .top-row {
         justify-content: space-between;
+        padding-inline: 1rem;
     }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
+    .top-row ::deep a,
+    .top-row ::deep .btn-link {
         margin-left: 0;
     }
 }
 
+/* Medium+ screens */
 @media (min-width: 641px) {
     .page {
         flex-direction: row;
     }
 
     .sidebar {
-        width: 250px;
+        width: 230px;
         height: 100vh;
         position: sticky;
         top: 0;
+        box-shadow: 6px 0 18px rgba(15, 23, 42, 0.35);
     }
 
     .top-row {
@@ -70,12 +85,27 @@ main {
         width: 0;
     }
 
-    .top-row, article {
-        padding-left: 2rem !important;
+    .top-row,
+    article {
+        padding-left: 1.5rem !important;
         padding-right: 1.5rem !important;
     }
 }
 
+@media (max-width: 640.98px) {
+    .page {
+        flex-direction: column;
+        overflow-x: hidden;          /* extra safety */
+    }
+
+    .sidebar {
+        width: 100%;                 /* sidebar = full screen width */
+        height: auto;
+        position: static;
+    }
+}
+
+/* Blazor error UI toast at bottom */
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -88,21 +118,9 @@ main {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
-
-.hh-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.5rem;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
 }
