@@ -7,80 +7,195 @@
 @inject ApplicationDbContext Db
 
 <div class="hh-page-container">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-3">
-        <h2 class="hh-page-title">Community Feed</h2>
+  <h2 class="hh-page-title">Community Feed</h2>
 
-        <div class="mb-0">
-            <label for="categoryFilter" class="form-label mb-1">Filter by Category</label>
-            <InputSelect id="categoryFilter"
-                         class="form-select"
-                         @bind-Value="selectedCategoryId">
-                <option value="0">All Categories</option>
-                @foreach (var cat in categories)
-                {
-                    <option value="@cat.Id">@cat.Name</option>
-                }
-            </InputSelect>
+  <div class="hh-surface">
+    @* Filter bar *@
+    <div class="hh-surface-header">
+      <div>
+        <div class="fw-semibold">Filter by Category</div>
+        <div class="hh-surface-header-text">
+          Browse all posts or narrow by category.
         </div>
+      </div>
+
+      <div class="hh-field-control" style="min-width: 180px;">
+        <label for="categoryFilter" class="hh-field-label small mb-1">Category</label>
+        <InputSelect id="categoryFilter"
+                     class="form-select"
+                     @bind-Value="SelectedCategoryId">
+          <option value="0">All Categories</option>
+          @foreach (var cat in categories)
+          {
+            <option value="@cat.Id">@cat.Name</option>
+          }
+        </InputSelect>
+      </div>
     </div>
 
+    @* Loading / empty / normal states *@
     @if (isLoading)
     {
-        <p>Loading...</p>
+      <p>Loading...</p>
     }
     else if (!FilteredPosts.Any())
     {
-        <p>No posts found for this filter.</p>
+      <p>No posts found for this filter.</p>
     }
     else
     {
-        <div class="hh-feed-grid">
-            @foreach (var post in FilteredPosts)
+      @* Grid of posts (paged) *@
+      <div class="hh-feed-grid">
+        @foreach (var post in PagedPosts)
+        {
+          <div class="hh-post-card">
+            @if (!string.IsNullOrWhiteSpace(post.ImageUrl))
             {
-                <article class="hh-post-card">
-                    @if (!string.IsNullOrWhiteSpace(post.ImageUrl))
-                    {
-                        <img src="@post.ImageUrl"
-                             alt="@post.Title"
-                             class="img-fluid mb-2"
-                             style="object-fit: cover; max-height: 220px; width: 100%;" />
-                    }
-
-                    <h5 class="mb-1">
-                        <a href="/posts/details/@post.Id">@post.Title</a>
-                    </h5>
-
-                    <h6 class="text-muted mb-0">
-                        @post.Category?.Name · @post.CreatedAt.ToLocalTime().ToString("g")
-                    </h6>
-                </article>
+              <img src="@post.ImageUrl"
+                   alt="@post.Title"
+                   class="card-img-top mb-3"
+                   style="object-fit: cover; max-height: 240px; border-radius: 16px;" />
             }
-        </div>
+
+            <h5 class="card-title mb-1">
+              <a href="/posts/details/@post.Id">
+                @post.Title
+              </a>
+            </h5>
+
+            <div class="text-muted small mb-2">
+              @post.Category?.Name · @post.CreatedAt.ToLocalTime().ToString("g")
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(post.Description))
+            {
+              <p class="card-text small mb-0">
+                @post.Description
+              </p>
+            }
+          </div>
+        }
+      </div>
+
+      @* Pagination controls *@
+      @if (TotalPages > 1)
+      {
+        <nav class="mt-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="text-muted small">
+                Showing @FirstItemIndex–@LastItemIndex of @FilteredPosts.Count() posts
+            </div>
+
+            <div class="btn-group">
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        disabled="@(CurrentPage == 1)"
+                        @onclick="PrevPage">
+                    Previous
+                </button>
+
+                @for (var page = 1; page <= TotalPages; page++)
+                {
+                    var localPage = page;  // 👈 capture per-iteration value
+
+                    <button type="button"
+                            class="btn btn-sm @(localPage == CurrentPage ? "btn-primary" : "btn-outline-secondary")"
+                            @onclick="@(() => GoToPage(localPage))">
+                        @localPage
+                    </button>
+                }
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        disabled="@(CurrentPage == TotalPages)"
+                        @onclick="NextPage">
+                    Next
+                </button>
+            </div>
+        </nav>
+      }
     }
+  </div>
 </div>
 
 @code {
-    private List<Post> allPosts = new();
-    private List<Category>? categories;
-    private int selectedCategoryId = 0;
-    private bool isLoading = true;
+  private List<Post> allPosts = new();
+  private List<Category>? categories;
+  private bool isLoading = true;
 
-    protected override async Task OnInitializedAsync()
+  // ----- Filtering -----
+  private int selectedCategoryId = 0;
+
+  // Use a property so we can reset pagination when the filter changes
+  private int SelectedCategoryId
+  {
+    get => selectedCategoryId;
+    set
     {
-        categories = await Db.Categories
-            .OrderBy(c => c.Name)
-            .ToListAsync();
-
-        allPosts = await Db.Posts
-            .Include(p => p.Category)
-            .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync();
-
-        isLoading = false;
+      if (selectedCategoryId != value)
+      {
+        selectedCategoryId = value;
+        CurrentPage = 1; // reset to first page when filter changes
+      }
     }
+  }
 
-    private IEnumerable<Post> FilteredPosts =>
-        selectedCategoryId == 0
-            ? allPosts
-            : allPosts.Where(p => p.CategoryId == selectedCategoryId);
+  private IEnumerable<Post> FilteredPosts =>
+    selectedCategoryId == 0
+      ? allPosts
+      : allPosts.Where(p => p.CategoryId == selectedCategoryId);
+
+  // ----- Pagination -----
+  private const int PageSize = 12;
+  private int CurrentPage { get; set; } = 1;
+
+  private int TotalPages =>
+    Math.Max(1, (int)Math.Ceiling(FilteredPosts.Count() / (double)PageSize));
+
+  private IEnumerable<Post> PagedPosts =>
+    FilteredPosts
+      .Skip((CurrentPage - 1) * PageSize)
+      .Take(PageSize);
+
+  private int FirstItemIndex =>
+    FilteredPosts.Any() ? (CurrentPage - 1) * PageSize + 1 : 0;
+
+  private int LastItemIndex =>
+    Math.Min(CurrentPage * PageSize, FilteredPosts.Count());
+
+  private void GoToPage(int page)
+  {
+    if (page < 1 || page > TotalPages) return;
+    CurrentPage = page;
+  }
+
+  private void PrevPage()
+  {
+    if (CurrentPage > 1)
+    {
+      CurrentPage--;
+    }
+  }
+
+  private void NextPage()
+  {
+    if (CurrentPage < TotalPages)
+    {
+      CurrentPage++;
+    }
+  }
+
+  // ----- Data loading -----
+  protected override async Task OnInitializedAsync()
+  {
+    categories = await Db.Categories
+      .OrderBy(c => c.Name)
+      .ToListAsync();
+
+    allPosts = await Db.Posts
+      .Include(p => p.Category)
+      .OrderByDescending(p => p.CreatedAt)
+      .ToListAsync();
+
+    isLoading = false;
+  }
 }
