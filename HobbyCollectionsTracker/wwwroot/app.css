@@ -2,7 +2,10 @@
 :root {
     /* Light theme (default) */
     --hh-bg: #f3f4f6;
-    --hh-bg-layer: #f3f4f6; /* can be just a color in light mode */
+    --hh-bg-layer:
+        /* dark overlay so the image is subtle and almost B&W */
+        linear-gradient(rgba(255, 255, 255, 0.75), rgba(0, 0, 0, 0.75)),
+        url("./img/image-reversed.png") center / cover no-repeat fixed;
 
     --hh-surface: #ffffff;
     --hh-surface-soft: #f9fafb;
@@ -13,7 +16,7 @@
     --hh-primary-dark: #3730a3;
     --hh-accent: #f97316;           /* orange accent */
 
-    --hh-text: #0f172a;
+    --hh-text: #020817;
     --hh-muted: #6b7280;
 
     --hh-radius-lg: 16px;
@@ -85,6 +88,23 @@ body {
 /* A softer background in light mode */
 [data-theme='light'] body {
     background-color: var(--hh-bg);
+}
+
+/* Home hero box */
+.hh-home-box {
+    border-radius: 22px;
+    padding: 1.75rem 2rem;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(148, 163, 184, 0.45);
+
+    /* light "glass" look */
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(10px);
+}
+
+:root[data-theme="dark"] .hh-home-box {
+    background: rgba(15, 23, 42, 0.88);
+    border-color: rgba(148, 163, 184, 0.55);
 }
 
 /* Links */
