@@ -5,7 +5,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <span class="me-2">
+        <span class="me-2 hh-header-hello">
             Hello, @context.User.Identity?.Name!
         </span>
 
@@ -13,17 +13,17 @@
         <form action="Account/Logout" method="post" class="d-inline">
             <AntiforgeryToken />
             <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-            <button type="submit" class="btn btn-outline-secondary ms-2">
+            <button type="submit" class="btn btn-outline-secondary hh-header-btn">
                 Logout
             </button>
         </form>
     </Authorized>
 
     <NotAuthorized>
-        <a href="Account/Login" class="btn btn-link p-0 align-baseline">
+        <a href="Account/Login" class="btn hh-header-login">
             Login
         </a>
-        <a href="Account/Register" class="btn btn-outline-secondary ms-2">
+        <a href="Account/Register" class="btn btn-outline-secondary hh-header-btn ms-2">
             Register
         </a>
     </NotAuthorized>

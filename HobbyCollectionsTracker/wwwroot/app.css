@@ -1,12 +1,12 @@
 /* ---------- Design tokens (colors, radii, shadows) ---------- */
-:root[data-theme='light'] {
+:root {
     /* Light theme (default) */
     --hh-bg: #f3f4f6;
     --hh-bg-layer: #f3f4f6; /* can be just a color in light mode */
 
     --hh-surface: #ffffff;
     --hh-surface-soft: #f9fafb;
-    --hh-border: #e5e7eb;
+    --hh-border: #222636;
 
     --hh-primary: #4f46e5;          /* indigo */
     --hh-primary-soft: #eef2ff;
@@ -19,6 +19,10 @@
     --hh-radius-lg: 16px;
     --hh-radius-md: 10px;
     --hh-shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.06);
+
+    /* header specific (light) */
+    --hh-header-bg: rgba(248, 250, 252, 0.95);
+    --hh-header-border: rgba(148, 163, 184, 0.35);
 }
 
 /* Dark theme overrides */
@@ -31,7 +35,7 @@
 
     --hh-surface: #020617;
     --hh-surface-soft: #020617;
-    --hh-border: #111827;
+    --hh-border: #4F5563;
 
     --hh-primary: #6366f1;
     --hh-primary-soft: rgba(79, 70, 229, 0.18);
@@ -42,15 +46,10 @@
     --hh-muted: #9ca3af;
 
     --hh-shadow-soft: 0 20px 45px rgba(15, 23, 42, 0.7);
-}
 
-:root[data-theme='dark'] {
-    --hh-bg: #020617;            /* very dark background           */
-    --hh-surface: #020617;
-    --hh-surface-soft: #020617;
-    --hh-border: #1f2937;
-    --hh-text: #e5e7eb;          /* light text                     */
-    --hh-muted: #9ca3af;
+    /* header specific (dark) */
+    --hh-header-bg: rgba(15, 23, 42, 0.96);
+    --hh-header-border: rgba(15, 23, 42, 1);
 }
 
 /* ---------- Base ---------- */
@@ -157,6 +156,37 @@ textarea.form-control {
     color: #dc2626;
 }
 
+/* Outline buttons (used for Logout / Register / View My Posts) */
+
+.btn-outline-secondary {
+    border-radius: 999px;
+    padding-inline: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Light theme look for outline buttons */
+:root:not([data-theme="dark"]) .btn-outline-secondary {
+    color: #374151;
+    border-color: #d1d5db;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+:root:not([data-theme="dark"]) .btn-outline-secondary:hover {
+    background-color: #e5e7eb;
+}
+
+/* Dark theme look for outline buttons */
+:root[data-theme="dark"] .btn-outline-secondary {
+    color: #e5e7eb;
+    border-color: rgba(156, 163, 175, 0.9);
+    background-color: rgba(15, 23, 42, 0.85);
+}
+
+:root[data-theme="dark"] .btn-outline-secondary:hover {
+    background-color: rgba(148, 163, 184, 0.24);
+    border-color: #e5e7eb;
+}
+
 /* ---------- Layout: header / main / footer ---------- */
 
 .hh-header {
@@ -164,11 +194,14 @@ textarea.form-control {
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1.5rem;
-    background-color: var(--hh-surface);
-    border-bottom: 1px solid var(--hh-border);
+    background-color: var(--hh-header-bg);
+    border-bottom: 1px solid var(--hh-header-border);
     position: sticky;
     top: 0;
     z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+    flex-wrap: wrap; /* allow left/right to move to two rows */
 }
 
 .hh-header-left {
@@ -328,7 +361,7 @@ h2 {
     margin-bottom: 1.5rem;
 }
 
-/* Generic white card for page content */
+/* Generic white/dark card for page content */
 .hh-surface {
     background: var(--hh-surface);
     border-radius: 22px;
@@ -356,15 +389,25 @@ h2 {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+    color: var(--hh-text);
 }
 
 .hh-table th,
 .hh-table td {
     padding: 0.5rem 0.25rem;
+    color: inherit;
 }
 
 .hh-table th {
     font-weight: 600;
+}
+
+/* Extra safety: in dark mode force lighter text for all tables */
+:root[data-theme="dark"] .hh-table th,
+:root[data-theme="dark"] .hh-table td,
+:root[data-theme="dark"] table th,
+:root[data-theme="dark"] table td {
+    color: #e5e7eb;
 }
 
 /* “My Posts” action buttons area */
@@ -481,10 +524,6 @@ h2 {
 
 /* --- Responsive tweaks for header (mobile) --- */
 
-.hh-header {
-    flex-wrap: wrap; /* allow left/right to move to two rows */
-}
-
 /* When the screen is narrow, stack header content nicely */
 @media (max-width: 768px) {
     .hh-header {
@@ -554,6 +593,48 @@ main {
 .hh-theme-toggle:hover {
     transform: translateY(-1px);
     box-shadow: 0 12px 26px rgba(15, 23, 42, 0.2);
+}
+
+/* Header greeting and login styles (matches LoginDisplay.razor) */
+
+.hh-header-hello {
+    font-size: 0.9rem;
+}
+
+.hh-header-btn {
+    border-radius: 999px;
+    padding: 0.35rem 0.95rem;
+    font-size: 0.9rem;
+}
+
+/* Special style for Login button */
+.hh-header-login {
+    border-radius: 999px;
+    padding: 0.35rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff !important;
+    border: none;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.45);
+}
+
+.hh-header-login:hover {
+    text-decoration: none;
+    filter: brightness(1.05);
+}
+
+/* Secondary CTA on the home hero */
+.home-cta-secondary {
+    min-width: 150px;
+}
+
+:root:not([data-theme="dark"]) .home-cta-secondary {
+    background-color: transparent;
+}
+
+:root[data-theme="dark"] .home-cta-secondary {
+    background-color: rgba(15, 23, 42, 0.9);
 }
 
 .brand-logo {
