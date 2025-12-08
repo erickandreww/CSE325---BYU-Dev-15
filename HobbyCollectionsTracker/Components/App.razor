@@ -1,4 +1,4 @@
-﻿@using HobbyCollectionsTracker.Components.Account
+﻿@using HobbyCollectionsTracker.Components.Layout  @* adjust if your folder/namespace differs *@
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,25 +11,15 @@
     <link rel="stylesheet" href="HobbyCollectionsTracker.styles.css" />
     <link rel="stylesheet" href="app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
+    <script src="js/hct-theme.js"></script>
     <HeadOutlet />
 </head>
 
 <body>
-    @* Global header *@
-    <header class="hh-header">
-        <div class="hh-header-left">
-            <img src="https://i.pinimg.com/736x/28/dc/36/28dc36d443030e5222e4b39118f18d4e.jpg" alt="HobbyHub logo" class="hh-logo" />
-            <h1 class="hh-title">HCT - Hobby Collections Tracker</h1>
-        </div>
-
-        <div class="hh-header-right">
-            <LoginDisplay />
-        </div>
-    </header>
+    <Header />   @* our header component *@
 
     <Routes />
-    
-    @* Global footer *@
+
     <footer class="hh-footer">
         <div class="hh-footer-content">
             <span>
@@ -39,7 +29,6 @@
             <span class="hh-footer-links">
                 <a href="/feed">Feed</a>
                 <a href="/posts/mine">My Post</a>
-                @* Admin link will only work for admins, but it's fine to show here *@
                 <a href="/categories">Categories (Admin)</a>
             </span>
         </div>

@@ -147,17 +147,20 @@
     width: 100%;
     padding-inline: 0.9rem;
     transition: background-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+    text-decoration: none;
 }
 
 .nav-item ::deep .nav-link:hover {
     background-color: rgba(148, 163, 184, 0.25);
     color: #f9fafb;
     transform: translateX(2px);
+    text-decoration: none;
 }
 
 .nav-item ::deep .nav-link {
     width: 100%;
     box-sizing: border-box;
+    text-decoration: none;
 }
 
 .nav-item ::deep a.active {

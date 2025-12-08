@@ -1,0 +1,55 @@
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<button type="button"
+    class="hh-theme-toggle"
+    @onclick="ToggleTheme"
+    title="Toggle light/dark mode">
+  @if (!_initialized)
+  {
+    @* while we don’t know yet, show a neutral icon *@
+    <span>☼</span>
+  }
+  else if (isDark)
+  {
+    <span>☾</span>
+  }
+  else
+  {
+    <span>☼</span>
+  }
+</button>
+
+@code {
+  private bool isDark;
+  private bool _initialized;
+
+  // Use OnAfterRenderAsync so JS is available (fixes prerender issues)
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      try
+      {
+        var theme = await JS.InvokeAsync<string>("hctTheme.get");
+        isDark = theme == "dark";
+        _initialized = true;
+        StateHasChanged(); // re-render button with correct icon
+      }
+      catch
+      {
+        // If JS isn't ready, just stay on default (light)
+        _initialized = true;
+      }
+    }
+  }
+
+  private async Task ToggleTheme()
+  {
+    isDark = !isDark;
+    var theme = isDark ? "dark" : "light";
+
+    await JS.InvokeVoidAsync("hctTheme.set", theme);
+  }
+}

@@ -1,39 +1,96 @@
 /* ---------- Design tokens (colors, radii, shadows) ---------- */
-:root {
+:root[data-theme='light'] {
+    /* Light theme (default) */
     --hh-bg: #f3f4f6;
+    --hh-bg-layer: #f3f4f6; /* can be just a color in light mode */
+
     --hh-surface: #ffffff;
     --hh-surface-soft: #f9fafb;
     --hh-border: #e5e7eb;
+
     --hh-primary: #4f46e5;          /* indigo */
     --hh-primary-soft: #eef2ff;
     --hh-primary-dark: #3730a3;
     --hh-accent: #f97316;           /* orange accent */
+
     --hh-text: #0f172a;
     --hh-muted: #6b7280;
+
     --hh-radius-lg: 16px;
     --hh-radius-md: 10px;
     --hh-shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.06);
 }
 
+/* Dark theme overrides */
+:root[data-theme="dark"] {
+    --hh-bg: #020617;
+    --hh-bg-layer:
+        /* dark overlay so the image is subtle and almost B&W */
+        linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+        url("./img/image.png") center / cover no-repeat fixed;
+
+    --hh-surface: #020617;
+    --hh-surface-soft: #020617;
+    --hh-border: #111827;
+
+    --hh-primary: #6366f1;
+    --hh-primary-soft: rgba(79, 70, 229, 0.18);
+    --hh-primary-dark: #4f46e5;
+    --hh-accent: #fb923c;
+
+    --hh-text: #e5e7eb;
+    --hh-muted: #9ca3af;
+
+    --hh-shadow-soft: 0 20px 45px rgba(15, 23, 42, 0.7);
+}
+
+:root[data-theme='dark'] {
+    --hh-bg: #020617;            /* very dark background           */
+    --hh-surface: #020617;
+    --hh-surface-soft: #020617;
+    --hh-border: #1f2937;
+    --hh-text: #e5e7eb;          /* light text                     */
+    --hh-muted: #9ca3af;
+}
+
 /* ---------- Base ---------- */
 
-html, body {
+html,
+body {
+    min-height: 100vh;
     height: 100%;
     margin: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont,
-                 "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--hh-bg-layer);
     background-color: var(--hh-bg);
     color: var(--hh-text);
-    overflow-x: hidden;      /* 👈 add this */
+    overflow-x: hidden;
 }
 
 /* Make page content breathe a bit */
 body {
-    line-height: 1.5;
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--hh-bg);
+    color: var(--hh-text);
+}
+
+/* Image + overlay ONLY in dark mode */
+[data-theme='dark'] body {
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+        url("./img/image.png") center / cover no-repeat fixed;
+}
+
+/* A softer background in light mode */
+[data-theme='light'] body {
+    background-color: var(--hh-bg);
 }
 
 /* Links */
-a, .btn-link {
+a,
+.btn-link {
     color: var(--hh-primary);
     text-decoration: none;
 }
@@ -73,7 +130,7 @@ a:focus,
 .form-select:focus,
 .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem #fff,
-                0 0 0 0.2rem var(--hh-primary-soft);
+        0 0 0 0.2rem var(--hh-primary-soft);
     border-color: var(--hh-primary);
 }
 
@@ -83,6 +140,8 @@ a:focus,
 textarea.form-control {
     border-radius: var(--hh-radius-md);
     border-color: var(--hh-border);
+    background-color: var(--hh-surface-soft);
+    color: var(--hh-text);
 }
 
 /* Validation messages */
@@ -184,6 +243,8 @@ textarea.form-control {
     border-radius: var(--hh-radius-lg);
     border-color: var(--hh-border);
     box-shadow: var(--hh-shadow-soft);
+    background-color: var(--hh-surface);
+    color: var(--hh-text);
 }
 
 .card {
@@ -197,7 +258,9 @@ textarea.form-control {
 
 /* ---------- Page titles ---------- */
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-weight: 600;
     letter-spacing: -0.02em;
 }
@@ -206,12 +269,10 @@ h2 {
     margin-bottom: 1rem;
 }
 
-
-
 /* Generic page container for main content */
 .hh-page {
-    max-width: 1200px;   
-    margin: 0 auto;      
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 2rem 2rem 3rem;
 }
 
@@ -236,7 +297,7 @@ h2 {
 }
 
 .hh-post-card {
-    background: #ffffff;
+    background: var(--hh-surface);
     border-radius: 24px;
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
     padding: 1.5rem;
@@ -245,8 +306,8 @@ h2 {
 /* Make page content wider and centered on larger screens */
 @media (min-width: 1024px) {
     .content {
-        max-width: 1120px;   /* how wide the main column can grow */
-        margin: 0 auto;      /* center it */
+        max-width: 1120px; /* how wide the main column can grow */
+        margin: 0 auto; /* center it */
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
@@ -254,25 +315,25 @@ h2 {
 
 /* Main content wrapper: wide but not full-width */
 .hh-page-container {
-    max-width: 1280px;          /* a bit wider than the Manage page */
-    margin: 2.5rem auto;        /* center + top/bottom space */
-    padding: 0 2rem;            /* side padding */
+    max-width: 1280px; /* a bit wider than the Manage page */
+    margin: 2.5rem auto; /* center + top/bottom space */
+    padding: 0 2rem; /* side padding */
 }
 
 /* Page titles */
 .hh-page-title {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--hh-text);
     margin-bottom: 1.5rem;
 }
 
 /* Generic white card for page content */
 .hh-surface {
-    background: #ffffff;
+    background: var(--hh-surface);
     border-radius: 22px;
     padding: 1.25rem 1.5rem;
-    box-shadow: 0 24px 45px rgba(15, 23, 42, 0.12);
+    box-shadow: var(--hh-shadow-soft);
 }
 
 /* Put a small gap between title/toolbar and content inside the card */
@@ -286,7 +347,7 @@ h2 {
 }
 
 .hh-surface-header-text {
-    color: #6b7280;
+    color: var(--hh-muted);
     font-size: 0.9rem;
 }
 
@@ -369,7 +430,7 @@ h2 {
 .hh-field-label {
     font-weight: 600;
     font-size: 0.95rem;
-    color: #111827;
+    color: var(--hh-text);
 }
 
 /* Input / textarea / select styling inside the modern form */
@@ -378,10 +439,11 @@ h2 {
 .hh-form .form-control,
 .hh-form .form-select {
     border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
-    background-color: #f9fafb;
+    border: 1px solid var(--hh-border);
+    background-color: var(--hh-surface-soft);
     padding: 0.55rem 0.8rem;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease,
+        background-color 0.15s ease;
 }
 
 /* Textarea tweaks */
@@ -397,9 +459,9 @@ h2 {
 .hh-form .form-control:focus,
 .hh-form .form-select:focus,
 .hh-form textarea:focus {
-    border-color: #4f46e5;
+    border-color: var(--hh-primary);
     box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.15);
-    background-color: #ffffff;
+    background-color: var(--hh-surface);
 }
 
 /* Validation messages sit a bit closer to the field */
@@ -420,12 +482,11 @@ h2 {
 /* --- Responsive tweaks for header (mobile) --- */
 
 .hh-header {
-    flex-wrap: wrap;           /* allow left/right to move to two rows */
+    flex-wrap: wrap; /* allow left/right to move to two rows */
 }
 
 /* When the screen is narrow, stack header content nicely */
 @media (max-width: 768px) {
-
     .hh-header {
         align-items: flex-start;
         gap: 0.5rem;
@@ -444,7 +505,7 @@ h2 {
     .hh-header-right {
         flex: 1 1 100%;
         display: flex;
-        justify-content: flex-start;  /* move greeting to the left */
+        justify-content: flex-start; /* move greeting to the left */
         margin-top: 0.25rem;
         font-size: 0.85rem;
         flex-wrap: wrap;
@@ -465,11 +526,49 @@ h2 {
     }
 }
 
+/* Make the Blazor .page & main transparent so the body/background shows */
+.page,
+main {
+    background: transparent;
+}
+
+/* ---------- Theme toggle button ---------- */
+
+.hh-theme-toggle {
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    border-radius: 999px;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hh-surface-soft);
+    color: var(--hh-text);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0;
+    box-shadow: var(--hh-shadow-soft);
+    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.hh-theme-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.2);
+}
+
+.brand-logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(0,0,0,.25);
+}
+
 /* ---------- Blazor error UI (keep functional) ---------- */
 
 .blazor-error-boundary {
     background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem,
-                #b32121;
+        #b32121;
     padding: 1rem 1rem 1rem 3.7rem;
     color: white;
 }
