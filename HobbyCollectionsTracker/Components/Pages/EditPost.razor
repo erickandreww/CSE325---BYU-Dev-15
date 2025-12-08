@@ -31,14 +31,14 @@
       }
       else if (post != null && categories != null) {
         @* Main edit form for an existing post *@
-        <EditForm Model="@post" OnValidSubmit="HandleValidSubmit" class="hh-form hh-form-narrow">
+        <EditForm Model="@post" OnValidSubmit="HandleValidSubmit" class="hh-form-narrow">
           <DataAnnotationsValidator />
           <ValidationSummary /> 
 
           @* Title *@
           <div class="mb-3 hh-form-row">
             <label for="title" class="form-label hh-field-label">Title</label>
-            <div class="hh-field-control">
+            <div >
               <InputText id="title" class="form-control"  @bind-Value="post.Title" />
               <ValidationMessage For="@(() => post.Title)" />
             </div>
@@ -47,7 +47,7 @@
           @* Description *@
           <div class="mb-3 hh-form-row">
             <label for="description" class="form-label hh-field-label">Description</label>
-            <div class="hh-field-control">
+            <div >
               <InputTextArea id="description" class="form-control" rows="4" 
                              @bind-Value="post.Description" />
               <ValidationMessage For="@(() => post.Description)" />
@@ -57,7 +57,7 @@
           @* Category dropdown (user can change the category) *@
           <div class="mb-3 hh-form-row">
             <label for="category" class="form-label hh-field-label">Category</label>
-            <div class="hh-field-control">
+            <div >
               <InputSelect id="category" class="form-select" @bind-Value="post.CategoryId">
                 @foreach (var cat in categories) 
                 {
@@ -71,7 +71,7 @@
           @* Optional image URL *@
           <div class="mb-3 hh-form-row">
             <label for="imageUrl" class="form-label hh-field-label">Image URL (optional)</label>
-            <div class="hh-field-control">
+            <div >
               <InputText id="imageUrl" class="form-control"  @bind-Value="post.ImageUrl" />
               <ValidationMessage For="@(() => post.ImageUrl)" />
             </div>

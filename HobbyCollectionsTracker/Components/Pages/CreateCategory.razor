@@ -15,14 +15,14 @@
 
   <div class="hh-surface">
     @* Form to Create a category *@
-    <EditForm Model="@category" OnValidSubmit="HandleValidSubmit" class="hh-form hh-form-narrow">
+    <EditForm Model="@category" OnValidSubmit="HandleValidSubmit" class="hh-form-narrow">
       <DataAnnotationsValidator />
       <ValidationSummary />
       
       @* To insert the new category name *@
       <div class="mb-3 hh-form-row">
         <label for="name" class="form-label hh-field-label">Name</label>
-        <div class="hh-field-control">
+        <div>
           <InputText id="name" class="form-control" @bind-Value="category.Name" />
           <ValidationMessage For="@(() => category.Name)" />
         </div>
