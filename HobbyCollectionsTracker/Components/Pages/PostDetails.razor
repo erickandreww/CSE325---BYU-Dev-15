@@ -29,7 +29,7 @@
     @* Main details card for the post *@
     <div>
       @* Show only if the post has an ImageUrl *@
-      @if (!String.IsNullOrEmpty(post.ImageUrl))
+      @if (!String.IsNullOrEmpty(post.ImageUrl)) @* The problem is here in post *@
       {
         <img src="@post.ImageUrl"
           alt="@post.Title"
@@ -63,8 +63,8 @@
   [Parameter]
   public int Id { get; set; }
 
-  // Post loaded 
-  private Post? post;
+  // Post loaded (non-nullable, we assign only when found)
+  private Post post = new();
 
   // Flags for UI state
   private bool isLoading = true;
@@ -73,13 +73,17 @@
   // Grab the post (and its Category) from the DB
   protected override async Task OnInitializedAsync()
   {
-    post = await Db.Posts
+    var loadedPost = await Db.Posts
       .Include(p => p.Category)
       .FirstOrDefaultAsync(p => p.Id == Id);
-    
-    if (post == null)
+
+    if (loadedPost is null)
     {
       notFound = true;
+    }
+    else
+    {
+      post = loadedPost; 
     }
 
     isLoading = false;
