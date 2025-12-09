@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- Colorful ring around the logo -->
+    <linearGradient id="hct-ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f97316"></stop>  <!-- orange -->
+      <stop offset="0.5" stop-color="#ec4899"></stop> <!-- pink -->
+      <stop offset="1" stop-color="#6366f1"></stop>    <!-- indigo -->
+    </linearGradient>
+  </defs>
+
+  <!-- Outer colorful ring -->
+  <circle cx="32" cy="32" r="30" fill="url(#hct-ring)"></circle>
+  <!-- Inner dark circle to match your dark header -->
+  <circle cx="32" cy="32" r="23" fill="#020617"></circle>
+
+  <!-- Little “shelf” of hobbies -->
+  <!-- Shelf bar -->
+  <rect x="18" y="38" width="28" height="3" rx="1.5" fill="#e5e7eb"></rect>
+
+  <!-- Left: collection card -->
+  <rect x="18" y="26" width="10" height="12" rx="2" fill="#facc15"></rect>
+  <!-- Heart on card -->
+  <path d="M23 30.5c-0.9-1-2.4-1-3.3 0-0.6 0.7-0.6 1.8 0 2.5l3.3 3.1 3.3-3.1c0.6-0.7 0.6-1.8 0-2.5-0.9-1-2.4-1-3.3 0z" fill="#ef4444"></path>
+
+  <!-- Middle: game controller -->
+  <rect x="27" y="28" width="10" height="8" rx="3" fill="#60a5fa"></rect>
+  <circle cx="30" cy="32" r="0.9" fill="#e5e7eb"></circle>
+  <rect x="29.1" y="31.1" width="1.8" height="1.8" fill="#e5e7eb"></rect>
+  <circle cx="33.5" cy="31" r="0.8" fill="#e5e7eb"></circle>
+  <circle cx="35.3" cy="33" r="0.8" fill="#e5e7eb"></circle>
+
+  <!-- Right: paintbrush (art hobby) -->
+  <path d="M40 25 l4.5 9.5c0.4 0.8 0.1 1.8-0.7 2.2-0.8 0.4-1.8 0.1-2.2-0.7L37 27z" fill="#a855f7"></path>
+  <path d="M37 27l3.2-3.2c1-1 2.9-0.8 3.7 0.6 0.6 1 0.5 2.5-0.3 3.3L40 31z" fill="#f9fafb"></path>
+  <!-- Tiny highlight at bottom of brush -->
+  <circle cx="42" cy="36.5" r="1" fill="#fbbf24"></circle>
+
+  <!-- Small "HCT" text at bottom -->
+  <text x="32" y="49" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="7" fill="#e5e7eb" letter-spacing="1">
+    HCT
+  </text>
+</svg>

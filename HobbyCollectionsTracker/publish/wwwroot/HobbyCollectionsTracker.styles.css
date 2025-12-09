@@ -1,0 +1,371 @@
+/* _content/HobbyCollectionsTracker/Components/Layout/MainLayout.razor.rz.scp.css */
+.page[b-6ozttj5kfm] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main[b-6ozttj5kfm] {
+    flex: 1;
+}
+
+/* Sidebar: flat dark panel instead of default gradient */
+.sidebar[b-6ozttj5kfm] {
+    background: radial-gradient(circle at top left, #1f2937, #020617);
+    color: #e5e7eb;
+}
+
+/* Top row inside layout (not your global header) */
+.top-row[b-6ozttj5kfm] {
+    background-color: transparent;
+    border-bottom: none;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Links in top-row (like "About") */
+.top-row[b-6ozttj5kfm]  a,
+.top-row[b-6ozttj5kfm]  .btn-link {
+    white-space: nowrap;
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.top-row[b-6ozttj5kfm]  a:hover,
+.top-row[b-6ozttj5kfm]  .btn-link:hover {
+    color: #111827;
+    text-decoration: underline;
+}
+
+.top-row[b-6ozttj5kfm]  a:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Small screens */
+@media (max-width: 640.98px) {
+    .top-row[b-6ozttj5kfm] {
+        justify-content: space-between;
+        padding-inline: 1rem;
+    }
+
+    .top-row[b-6ozttj5kfm]  a,
+    .top-row[b-6ozttj5kfm]  .btn-link {
+        margin-left: 0;
+    }
+}
+
+/* Medium+ screens */
+@media (min-width: 641px) {
+    .page[b-6ozttj5kfm] {
+        flex-direction: row;
+    }
+
+    .sidebar[b-6ozttj5kfm] {
+        width: 230px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        box-shadow: 6px 0 18px rgba(15, 23, 42, 0.35);
+    }
+
+    .top-row[b-6ozttj5kfm] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .top-row.auth[b-6ozttj5kfm]  a:first-child {
+        flex: 1;
+        text-align: right;
+        width: 0;
+    }
+
+    .top-row[b-6ozttj5kfm],
+    article[b-6ozttj5kfm] {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+@media (max-width: 640.98px) {
+    .page[b-6ozttj5kfm] {
+        flex-direction: column;
+        overflow-x: hidden;          /* extra safety */
+    }
+
+    .sidebar[b-6ozttj5kfm] {
+        width: 100%;                 /* sidebar = full screen width */
+        height: auto;
+        position: static;
+    }
+}
+
+/* Blazor error UI toast at bottom */
+#blazor-error-ui[b-6ozttj5kfm] {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss[b-6ozttj5kfm] {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+/* _content/HobbyCollectionsTracker/Components/Layout/NavMenu.razor.rz.scp.css */
+/* Hamburger (mobile) */
+.navbar-toggler[b-b9uyzhu1l2] {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: linear-gradient(135deg, rgba(148, 163, 255, 0.25), rgba(15, 23, 42, 0.95));
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Three hamburger lines built from one element + shadows */
+.navbar-toggler[b-b9uyzhu1l2]::before {
+    content: "";
+    width: 1.6rem;
+    height: 2px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow:
+        0 -6px 0 0 #ffffff,   /* top line  */
+        0  6px 0 0 #ffffff;   /* bottom line */
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+/* Second bar used only for the “X” state */
+.navbar-toggler[b-b9uyzhu1l2]::after {
+    content: "";
+    position: absolute;
+    width: 1.6rem;
+    height: 2px;
+    border-radius: 999px;
+    background: #ffffff;
+    opacity: 0;
+    transform: rotate(0deg);
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+/* When menu is open (checked) → turn into an X */
+.navbar-toggler:checked[b-b9uyzhu1l2] {
+    background: rgba(15, 23, 42, 0.95);
+}
+
+.navbar-toggler:checked[b-b9uyzhu1l2]::before {
+    box-shadow: none;          /* remove extra lines */
+    transform: rotate(45deg);  /* first bar of the X */
+}
+
+.navbar-toggler:checked[b-b9uyzhu1l2]::after {
+    opacity: 1;
+    transform: rotate(-45deg); /* second bar of the X */
+}
+
+/* Header area at the top of the sidebar (HCT + subtitle) */
+.top-row[b-b9uyzhu1l2] {
+    background: transparent;          /* gradient is already on the sidebar */
+    padding: 0.75rem 1.5rem 0.75rem;
+    height: auto;                     /* let it grow to fit two lines */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* App short name */
+.navbar-brand[b-b9uyzhu1l2] {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.15rem;
+}
+
+/* "Hobby Collections Tracker" text */
+.text-muted.small[b-b9uyzhu1l2] {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.85rem;
+    line-height: 1.3;
+    max-width: 170px;        /* avoid very long line */
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Give some space between header and first nav item */
+.nav-scrollable[b-b9uyzhu1l2] {
+    padding-top: 0.4rem;
+}
+
+.nav-item:first-of-type[b-b9uyzhu1l2] {
+    padding-top: 0.6rem;
+}
+
+/* Icon container class (bi-*) */
+.bi[b-b9uyzhu1l2] {
+    display: inline-block;
+    position: relative;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-right: 0.6rem;
+    top: -1px;
+    background-size: cover;
+}
+
+/* Existing SVG icons */
+.bi-house-door-fill-nav-menu[b-b9uyzhu1l2] { /* Home icon */ }
+.bi-plus-square-fill-nav-menu[b-b9uyzhu1l2] { /* New Post icon */ }
+.bi-list-nested-nav-menu[b-b9uyzhu1l2] { /* Feed icon */ }
+.bi-lock-nav-menu[b-b9uyzhu1l2] { /* Admin icon */ }
+.bi-person-nav-menu[b-b9uyzhu1l2] { /* Profile icon */ }
+.bi-person-badge-nav-menu[b-b9uyzhu1l2] { /* Account icon */ }
+.bi-person-fill-nav-menu[b-b9uyzhu1l2] { /* User icon */ }
+.bi-arrow-bar-left-nav-menu[b-b9uyzhu1l2] { /* Collapse icon */ }
+
+/* Nav items */
+.nav-item[b-b9uyzhu1l2] {
+    font-size: 0.9rem;
+    padding-bottom: 0.35rem;
+}
+
+.nav-item:last-of-type[b-b9uyzhu1l2] {
+    padding-bottom: 1rem;
+}
+
+/* Actual link inside each item */
+.nav-item[b-b9uyzhu1l2]  .nav-link {
+    color: #cbd5f5;
+    background: none;
+    border: none;
+    border-radius: 999px;
+    height: 2.6rem;
+    display: flex;
+    align-items: center;
+    line-height: 2.6rem;
+    width: 100%;
+    padding-inline: 0.9rem;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+    text-decoration: none;
+}
+
+.nav-item[b-b9uyzhu1l2]  .nav-link:hover {
+    background-color: rgba(148, 163, 184, 0.25);
+    color: #f9fafb;
+    transform: translateX(2px);
+    text-decoration: none;
+}
+
+.nav-item[b-b9uyzhu1l2]  .nav-link {
+    width: 100%;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+.nav-item[b-b9uyzhu1l2]  a.active {
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
+}
+
+/* Collapsible behavior */
+.nav-scrollable[b-b9uyzhu1l2] {
+    display: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.navbar-toggler:checked ~ .nav-scrollable[b-b9uyzhu1l2] {
+    display: block;
+}
+
+/* Sidebar heading (HCT + Hobby Collections Tracker) */
+.hh-sidebar-heading[b-b9uyzhu1l2] {
+    padding: 1.25rem 1.5rem 0.25rem;
+}
+
+.hh-sidebar-title[b-b9uyzhu1l2] {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.hh-sidebar-subtitle[b-b9uyzhu1l2] {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.25;
+    margin-top: 0.15rem;
+    margin-bottom: 0.85rem; /* extra gap above Home */
+    max-width: 180px;       /* avoid very long lines */
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Email line in the sidebar */
+.hh-nav-email[b-b9uyzhu1l2] {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    padding-top: 0.75rem;
+}
+
+/* User line at the bottom of the nav */
+.hh-user-link[b-b9uyzhu1l2] {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    white-space: normal;   
+    line-height: 1.3;
+}
+
+/* Desktop: sidebar always visible */
+@media (min-width: 641px) {
+    .page[b-b9uyzhu1l2] {
+        flex-direction: row;
+    }
+
+    .sidebar[b-b9uyzhu1l2] {
+        width: 260px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        box-shadow: 6px 0 18px rgba(15, 23, 42, 0.35);
+    }
+
+    .navbar-toggler[b-b9uyzhu1l2] {
+        display: none;
+    }
+
+    .nav-scrollable[b-b9uyzhu1l2] {
+        display: block;
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+    }
+}
