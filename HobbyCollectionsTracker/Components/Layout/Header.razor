@@ -1,16 +1,16 @@
-@using HobbyCollectionsTracker.Components.Account
+@using HobbyCollectionsTracker.Components.Account.Shared
 @rendermode InteractiveServer
 
 <header class="hh-header">
     <div class="hh-header-left">
-        <img src="/img/logo.svg"
-             alt="HobbyHub logo"
-             class="hh-logo" />
-        <h1 class="hh-title">HCT - Hobby Collections Tracker</h1>
+        <img src="/img/logo.svg" alt="HCT logo" class="hh-logo" />
+        <div class="hh-title" role="heading" aria-level="1">
+            HCT - Hobby Collections Tracker
+        </div>
     </div>
 
     <div class="hh-header-right">
-        <ThemeToggle />   @* Theme button *@
-        <LoginDisplay />  @* Auth UI *@
+        <ThemeToggle /> @* Theme button *@
+        <LoginDisplay /> @* Auth UI *@
     </div>
 </header>
