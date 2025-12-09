@@ -40,7 +40,7 @@
 
         <!-- Authenticated-only links -->
         <AuthorizeView>
-            <Authorized Context="authContext">
+            <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="posts/mine">
                         My Posts
@@ -53,36 +53,11 @@
                     </NavLink>
                 </div>
 
-                @* User profile link (shows nicer display name) *@
-                @{
-                    var displayName = authContext.User.Identity?.Name;
-
-                    // If it's an email, show only the part before @
-                    if (!string.IsNullOrEmpty(displayName) && displayName.Contains("@"))
-                    {
-                        displayName = displayName.Split('@')[0];
-                    }
-                }
-
                 <div class="nav-item px-3">
                     <NavLink class="nav-link hh-user-link" href="Account/Manage">
-                        @displayName
+                        Account
                     </NavLink>
                 </div>
-
-                @* 
-                  Optional logout button styled like the other nav items.
-                  Uncomment if/when you’re ready to use it.
-                *@
-                @*<div class="nav-item px-3">
-                    <form action="Account/Logout" method="post">
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <button type="submit" class="nav-link">
-                            Logout
-                        </button>
-                    </form>
-                </div>*@
             </Authorized>
         </AuthorizeView>
     </nav>
