@@ -9,7 +9,7 @@
 
 @* Read-only Post Details page *@
   <div class="hh-page-container">
-  <h2 class="hh-page-title">Post Details</h2>
+  <h1 class="hh-page-title">Post Details</h1>
 
   @if (isLoading == true) {
     <p>Loading...</p>
@@ -36,7 +36,7 @@
       }
 
       <div class="card-body">
-        <h3 class="card-title">@post.Title</h3>
+        <h2 class="card-title">@post.Title</h2>
         <h6 class="card-subtitle mb-2 text muted">
           @post.Category?.Name · @post.CreatedAt.ToLocalTime().ToString("g")
         </h6>
