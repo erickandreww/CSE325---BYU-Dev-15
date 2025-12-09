@@ -4,9 +4,19 @@
 @inject NavigationManager NavigationManager
 
 <AuthorizeView>
-    <Authorized>
+    <Authorized Context="authContext">
+        @* Shows nicer display name *@
+        @{
+            var displayName = authContext.User.Identity?.Name;
+
+            // If it's an email, show only the part before @
+            if (!string.IsNullOrEmpty(displayName) && displayName.Contains("@"))
+            {
+                displayName = displayName.Split('@')[0];
+            }
+        }
         <span class="me-2 hh-header-hello">
-            Hello, @context.User.Identity?.Name!
+            Hello, @displayName!
         </span>
 
         @* POST to the logout endpoint provided by Identity *@
