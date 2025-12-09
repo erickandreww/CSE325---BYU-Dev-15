@@ -1,7 +1,9 @@
 @using HobbyCollectionsTracker.Components.Account.Shared
 @rendermode InteractiveServer
 
+@* Website Header *@
 <header class="hh-header">
+    @* Website Title and Logo *@
     <div class="hh-header-left">
         <img src="/img/logo.svg" alt="HCT logo" class="hh-logo" />
         <div class="hh-title" role="heading" aria-level="1">
@@ -9,6 +11,8 @@
         </div>
     </div>
 
+    @* Dark Mode button *@
+    @* Login, Register, and Logout buttons  *@
     <div class="hh-header-right">
         <ThemeToggle /> @* Theme button *@
         <LoginDisplay /> @* Auth UI *@

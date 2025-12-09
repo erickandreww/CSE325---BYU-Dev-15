@@ -114,7 +114,7 @@
     background-size: cover;
 }
 
-/* Existing SVG icons - we keep them, just reuse */
+/* Existing SVG icons */
 .bi-house-door-fill-nav-menu { /* Home icon */ }
 .bi-plus-square-fill-nav-menu { /* New Post icon */ }
 .bi-list-nested-nav-menu { /* Feed icon */ }
@@ -213,7 +213,7 @@
 .hh-user-link {
     font-size: 0.8rem;
     opacity: 0.9;
-    white-space: normal;     /* allow wrapping on small screens */
+    white-space: normal;   
     line-height: 1.3;
 }
 

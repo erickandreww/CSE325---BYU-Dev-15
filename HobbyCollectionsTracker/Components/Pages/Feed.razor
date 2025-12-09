@@ -8,6 +8,7 @@
 
 <PageTitle>Feed - HCT</PageTitle>
 
+@* Feed page *@
 <div class="hh-page-container">
   <h1 class="hh-page-title">Community Feed</h1>
 
@@ -97,7 +98,7 @@
 
                 @for (var page = 1; page <= TotalPages; page++)
                 {
-                    var localPage = page;  // 👈 capture per-iteration value
+                    var localPage = page; 
 
                     <button type="button"
                             class="btn btn-sm @(localPage == CurrentPage ? "btn-primary" : "btn-outline-secondary")"

@@ -2,13 +2,13 @@
 @inject IJSRuntime JS
 @rendermode InteractiveServer
 
+@* Theme change button (Dark mode / "Light" Mode) *@
 <button type="button"
     class="hh-theme-toggle"
     @onclick="ToggleTheme"
     title="Toggle light/dark mode">
   @if (!_initialized)
   {
-    @* while we don’t know yet, show a neutral icon *@
     <span>☼</span>
   }
   else if (isDark)
