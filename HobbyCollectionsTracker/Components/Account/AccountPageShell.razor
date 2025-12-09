@@ -1,0 +1,15 @@
+@* Wraps Identity account pages in your standard card layout
+   and ensures the page title uses <h2>, not <h1>. *@
+
+<div class="hh-page-container">
+    <h2 class="hh-page-title">@Title</h2>
+
+    <div class="hh-surface hh-section-card--narrow">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}
