@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using HobbyCollectionsTracker.Components;
 using HobbyCollectionsTracker.Components.Account;
+using HobbyCollectionsTracker.Seeding;
 using HobbyCollectionsTracker.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +44,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await SeedAdminAsync(services);
+    await AdminSeeder.SeedAdminAsync(services);
 }
 
 // Configure the HTTP request pipeline.
