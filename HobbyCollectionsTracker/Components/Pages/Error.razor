@@ -1,19 +1,27 @@
 ﻿@page "/Error"
+@page "/Error/{Code:int}"
 @using System.Diagnostics
 
-<PageTitle>Error</PageTitle>
+<PageTitle>@Title</PageTitle>
 
 <div class="hh-page-container">
     <div class="hh-home-box">
-        <h1 class="text-danger">Error.</h1>
-        <h2 class="text-danger">An error occurred while processing your request.</h2>
+        <h1 class="text-danger">@Title</h1>
+        <h2 class="text-danger">@Message</h2>
 
         @if (ShowRequestId)
         {
-            <p>
+            <p class="mt-3">
                 <strong>Request ID:</strong> <code>@RequestId</code>
             </p>
         }
+
+        <div class="mt-3 d-flex flex-wrap gap-2">
+            <a class="btn btn-primary" href="/">Go to Home</a>
+            <a class="btn btn-secondary" href="/feed">Go to Feed</a>
+        </div>
+
+        <hr class="my-4" />
 
         <h3>Development Mode</h3>
         <p>
@@ -31,12 +39,34 @@
 </div>
 
 @code {
+    // Optional status code (404, 403, etc.) when we come from UseStatusCodePagesWithReExecute
+    [Parameter]
+    public int? Code { get; set; }
+
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
     private string? RequestId { get; set; }
     private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-    protected override void OnInitialized() =>
-    RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+    private string Title => Code switch
+    {
+        404 => "Page not found",
+        403 => "Access denied",
+        500 => "Server error",
+        _   => "Error"
+    };
+
+    private string Message => Code switch
+    {
+        404 => "The page you requested couldn't be found. It may have been removed, renamed, or the address may be incorrect.",
+        403 => "You don’t have permission to access this resource.",
+        500 => "An internal server error occurred while processing your request.",
+        _   => "An error occurred while processing your request."
+    };
+
+    protected override void OnInitialized()
+    {
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+    }
 }

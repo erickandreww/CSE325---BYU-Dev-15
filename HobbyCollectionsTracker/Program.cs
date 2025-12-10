@@ -6,6 +6,7 @@ using HobbyCollectionsTracker.Components;
 using HobbyCollectionsTracker.Components.Account;
 using HobbyCollectionsTracker.Seeding;
 using HobbyCollectionsTracker.Data;
+using Microsoft.AspNetCore.Diagnostics; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,9 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -54,9 +57,13 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    // Unhandled exceptions go here
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
+
+// 🔹 NEW: handle status-code errors (404, 403, etc.) and re-execute as /Error/{code}
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseHttpsRedirection();
 
