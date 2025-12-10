@@ -4,6 +4,7 @@
 @using HobbyCollectionsTracker.Models
 @using HobbyCollectionsTracker.Data
 @using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
 @inject ApplicationDbContext Db
 @inject NavigationManager Nav
 
@@ -11,118 +12,181 @@
 
 @* Read-only Post Details page *@
 <div class="hh-page-container">
-  <h1 class="hh-page-title">Post Details</h1>
+    <h1 class="hh-page-title">Post Details</h1>
 
-  @if (isLoading == true)
-  {
-    <p>Loading...</p>
-  }
-  else if (notFound == true)
-  {
-    @* Post id didn't match anything in the database *@
-    <div class="alert alert-danger">
-      Post not found.
-    </div>
-    <button class="btn btn-secondary" @onclick="GoBack">
-      Back
-    </button>
-  }
-  else
-  {
-    @* Main details card for the post *@
-    <article class="hh-surface">
-      <div class="row g-4 align-items-start">
-        @* Left column: image *@
-        <div class="col-12 col-lg-5">
-          @* Show only if the post has an ImageUrl *@
-          @if (!string.IsNullOrEmpty(post.ImageUrl)) @* The problem is here in post *@
-          {
-            <img src="@post.ImageUrl"
-                 alt="@post.Title"
-                 class="img-fluid rounded-4 w-100"
-                 style="object-fit: cover; max-height: 480px;" />
-          }
-        </div>
-
-        @* Right column: text details + actions *@
-        <div class="col-12 col-lg-7 d-flex flex-column">
-          <header class="mb-3">
-            <nav aria-label="breadcrumb" class="small mb-1">
-              <a href="/feed" class="text-decoration-none">Feed</a>
-              <span class="text-muted"> · Post details</span>
-            </nav>
-
-            <h2 class="h3 mb-2">@post.Title</h2>
-
-            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-              @if (!string.IsNullOrWhiteSpace(post.Category?.Name))
-              {
-                <span class="badge rounded-pill bg-primary-subtle text-primary small px-3 py-1">
-                  @post.Category!.Name
-                </span>
-              }
-              <span class="text-muted small">
-                @post.CreatedAt.ToLocalTime().ToString("f")
-              </span>
-            </div>
-          </header>
-
-          <section class="flex-grow-1">
-            <p class="mb-0">
-              @post.Description
-            </p>
-          </section>
-
-          @* Simple navigation buttons under the card *@
-          <footer class="mt-4 d-flex flex-wrap gap-2">
-            <button class="btn btn-secondary" type="button" @onclick="GoBack">
-              Back
-            </button>
-            <a class="btn btn-primary" href="/feed">
-              Go to Feed
-            </a>
-          </footer>
-        </div>
-      </div>
-    </article>
-  }
-</div>
-
-
-@code {
-  // Id of the post
-  [Parameter]
-  public int Id { get; set; }
-
-  // Post loaded (non-nullable, we assign only when found)
-  private Post post = new();
-
-  // Flags for UI state
-  private bool isLoading = true;
-  private bool notFound = false;
-
-  // Grab the post (and its Category) from the DB
-  protected override async Task OnInitializedAsync()
-  {
-    var loadedPost = await Db.Posts
-      .Include(p => p.Category)
-      .FirstOrDefaultAsync(p => p.Id == Id);
-
-    if (loadedPost is null)
+    @if (isLoading == true)
     {
-      notFound = true;
+        <p>Loading...</p>
+    }
+    else if (notFound == true)
+    {
+        @* Post id didn't match anything in the database *@
+        <div class="alert alert-danger">
+            Post not found.
+        </div>
+        <button class="btn btn-secondary" @onclick="GoBack">
+            Back
+        </button>
     }
     else
     {
-      post = loadedPost;
+        @* Main details card for the post *@
+        <div class="hh-surface hh-section-card--narrow">
+            @* Show only if the post has an ImageUrl *@
+            @if (!string.IsNullOrEmpty(post.ImageUrl))
+            {
+                <img src="@post.ImageUrl"
+                     alt="@post.Title"
+                     class="img-fluid mb-3"
+                     style="object-fit: cover; max-height: 360px; border-radius: 18px;" />
+            }
+
+            <div class="card-body p-0">
+                <h2 class="card-title">@post.Title</h2>
+
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3 small text-muted">
+                    <span class="badge rounded-pill bg-primary-subtle text-primary">
+                        @post.Category?.Name
+                    </span>
+                    <span>@post.CreatedAt.ToLocalTime().ToString("f")</span>
+                    <span class="text-muted">• @likeCount @((likeCount == 1) ? "like" : "likes")</span>
+                </div>
+
+                <p class="card-text">@post.Description</p>
+
+                @* Like / Unlike button *@
+                <div class="mt-3">
+                    @if (isAuthenticated)
+                    {
+                        <button class="btn btn-outline-primary me-2"
+                                @onclick="ToggleLike">
+                            @(isLiked ? "♥ Liked" : "♡ Like")
+                        </button>
+                        <span class="small text-muted">
+                            @likeCount @((likeCount == 1) ? "person likes this" : "people like this")
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="small text-muted">
+                            @likeCount @((likeCount == 1) ? "like" : "likes") ·
+                            <a href="Account/Login">Log in</a> to like this post.
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* Simple navigation buttons under the card *@
+        <div class="mt-3 d-flex gap-2">
+            <button class="btn btn-secondary" @onclick="GoBack">
+                Back
+            </button>
+            <a class="btn btn-primary" href="/feed">
+                Go to Feed
+            </a>
+        </div>
+    }
+</div>
+
+@code {
+    // Id of the post
+    [Parameter]
+    public int Id { get; set; }
+
+    // Post loaded (non-nullable, we assign only when found)
+    private Post post = new();
+
+    // Flags for UI state
+    private bool isLoading = true;
+    private bool notFound = false;
+
+    // Like-related state
+    private int likeCount;
+    private bool isLiked;
+    private bool isAuthenticated;
+
+    // Access current user
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    // Grab the post (and its Category) from the DB
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+        isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var loadedPost = await Db.Posts
+            .Include(p => p.Category)
+            .Include(p => p.Likes)
+            .FirstOrDefaultAsync(p => p.Id == Id);
+
+        if (loadedPost is null)
+        {
+            notFound = true;
+        }
+        else
+        {
+            post = loadedPost;
+            likeCount = post.Likes.Count;
+
+            if (isAuthenticated && !string.IsNullOrEmpty(userId))
+            {
+                isLiked = post.Likes.Any(l => l.UserId == userId);
+            }
+        }
+
+        isLoading = false;
     }
 
-    isLoading = false;
-  }
+    // Simple "back" behavior: for now just send the user to the feed
+    private void GoBack()
+    {
+        Nav.NavigateTo("/feed");
+    }
 
-  // Simple "back" behavior: for now just send the user to the feed
-  private void GoBack()
-  {
-    Nav.NavigateTo("/feed");
-  }
+    private async Task ToggleLike()
+    {
+        if (!isAuthenticated)
+        {
+            Nav.NavigateTo("Account/Login", true);
+            return;
+        }
+
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId) || post.Id == 0)
+        {
+            return;
+        }
+
+        var existing = await Db.PostLikes
+            .FirstOrDefaultAsync(l => l.PostId == post.Id && l.UserId == userId);
+
+        if (existing is null)
+        {
+            Db.PostLikes.Add(new PostLike
+            {
+                PostId = post.Id,
+                UserId = userId,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            isLiked = true;
+            likeCount++;
+        }
+        else
+        {
+            Db.PostLikes.Remove(existing);
+            isLiked = false;
+            likeCount = Math.Max(0, likeCount - 1);
+        }
+
+        await Db.SaveChangesAsync();
+    }
 }

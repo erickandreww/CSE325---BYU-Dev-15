@@ -44,4 +44,6 @@ public class Post
   /// Key Id of the user who created the post
   /// </summary>
   public string UserId { get; set; } = string.Empty;
+
+  public ICollection<PostLike> Likes { get; set; } = new List<PostLike>();
 }
