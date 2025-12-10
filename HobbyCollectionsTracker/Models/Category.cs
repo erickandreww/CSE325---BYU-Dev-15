@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+
 namespace HobbyCollectionsTracker.Models;
 
+[Index(nameof(Name), IsUnique = true)]
 public class Category
 {
   /// <summary>
