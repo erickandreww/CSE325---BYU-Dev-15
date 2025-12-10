@@ -644,6 +644,109 @@ main {
     filter: brightness(1.05);
 }
 
+/* ---------- Post Details layout ---------- */
+
+.hh-post-details {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.hh-post-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* On wider screens, put image and text side-by-side */
+@media (min-width: 900px) {
+    .hh-post-header {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+.hh-post-hero {
+    margin: 0;
+    flex: 0 0 40%;
+}
+
+.hh-post-hero-img {
+    width: 100%;
+    max-height: 380px;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: var(--hh-shadow-soft);
+}
+
+/* Text side */
+.hh-post-header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.hh-post-breadcrumb {
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+    color: var(--hh-muted);
+}
+
+.hh-post-breadcrumb a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.hh-post-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--hh-text);
+}
+
+@media (min-width: 900px) {
+    .hh-post-title {
+        font-size: 2rem;
+    }
+}
+
+.hh-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--hh-muted);
+}
+
+.hh-post-category-pill {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background-color: var(--hh-primary-soft);
+    color: var(--hh-primary-dark);
+    font-weight: 500;
+}
+
+.hh-post-date {
+    opacity: 0.9;
+}
+
+/* Body text */
+.hh-post-body {
+    font-size: 0.98rem;
+    line-height: 1.6;
+}
+
+/* Actions row */
+.hh-post-actions {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
 /* Secondary CTA on the home hero */
 .home-cta-secondary {
     min-width: 150px;
@@ -663,6 +766,27 @@ main {
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 0 10px rgba(0,0,0,.25);
+}
+
+/* ---------- Accessibility tweaks for dark theme ---------- */
+
+/* Form labels on dark cards */
+[data-theme='dark'] .hh-surface .form-label,
+[data-theme='dark'] .hh-surface .form-check-label,
+[data-theme='dark'] .hh-surface label {
+    color: #e5e7eb; /* very light gray, good contrast on #020617 */
+}
+
+/* Links inside auth cards in dark mode */
+[data-theme='dark'] .hh-surface a,
+[data-theme='dark'] .hh-surface a:visited {
+    color: #c7d2fe; /* light indigo, AA contrast vs #020617 */
+    text-decoration: underline; /* helps keyboard & low-vision users */
+}
+
+[data-theme='dark'] .hh-surface a:hover,
+[data-theme='dark'] .hh-surface a:focus {
+    color: #e5e7ff;
 }
 
 /* ---------- Blazor error UI (keep functional) ---------- */

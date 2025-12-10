@@ -10,13 +10,15 @@
 <PageTitle>Post Details - HCT</PageTitle>
 
 @* Read-only Post Details page *@
-  <div class="hh-page-container">
+<div class="hh-page-container">
   <h1 class="hh-page-title">Post Details</h1>
 
-  @if (isLoading == true) {
+  @if (isLoading == true)
+  {
     <p>Loading...</p>
   }
-  else if (notFound == true) {
+  else if (notFound == true)
+  {
     @* Post id didn't match anything in the database *@
     <div class="alert alert-danger">
       Post not found.
@@ -25,35 +27,64 @@
       Back
     </button>
   }
-  else {
+  else
+  {
     @* Main details card for the post *@
-    <div>
-      @* Show only if the post has an ImageUrl *@
-      @if (!String.IsNullOrEmpty(post.ImageUrl)) @* The problem is here in post *@
-      {
-        <img src="@post.ImageUrl"
-          alt="@post.Title"
-          class="card-img-top"
-          style="object-fit: cover; max-height: 320px;" />
-      }
+    <article class="hh-surface">
+      <div class="row g-4 align-items-start">
+        @* Left column: image *@
+        <div class="col-12 col-lg-5">
+          @* Show only if the post has an ImageUrl *@
+          @if (!string.IsNullOrEmpty(post.ImageUrl)) @* The problem is here in post *@
+          {
+            <img src="@post.ImageUrl"
+                 alt="@post.Title"
+                 class="img-fluid rounded-4 w-100"
+                 style="object-fit: cover; max-height: 480px;" />
+          }
+        </div>
 
-      <div class="card-body">
-        <h2 class="card-title">@post.Title</h2>
-        <h6 class="card-subtitle mb-2 text muted">
-          @post.Category?.Name · @post.CreatedAt.ToLocalTime().ToString("g")
-        </h6>
+        @* Right column: text details + actions *@
+        <div class="col-12 col-lg-7 d-flex flex-column">
+          <header class="mb-3">
+            <nav aria-label="breadcrumb" class="small mb-1">
+              <a href="/feed" class="text-decoration-none">Feed</a>
+              <span class="text-muted"> · Post details</span>
+            </nav>
 
-        <p class="card-text">@post.Description</p>
+            <h2 class="h3 mb-2">@post.Title</h2>
+
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+              @if (!string.IsNullOrWhiteSpace(post.Category?.Name))
+              {
+                <span class="badge rounded-pill bg-primary-subtle text-primary small px-3 py-1">
+                  @post.Category!.Name
+                </span>
+              }
+              <span class="text-muted small">
+                @post.CreatedAt.ToLocalTime().ToString("f")
+              </span>
+            </div>
+          </header>
+
+          <section class="flex-grow-1">
+            <p class="mb-0">
+              @post.Description
+            </p>
+          </section>
+
+          @* Simple navigation buttons under the card *@
+          <footer class="mt-4 d-flex flex-wrap gap-2">
+            <button class="btn btn-secondary" type="button" @onclick="GoBack">
+              Back
+            </button>
+            <a class="btn btn-primary" href="/feed">
+              Go to Feed
+            </a>
+          </footer>
+        </div>
       </div>
-    </div>
-    
-    @* Simple navigation buttons under the card *@
-    <button class="btn btn-secondary" @onclick="GoBack">
-      Back
-    </button>
-    <a class="btn btn-primary" href="/feed">
-      Go to Feed
-    </a>
+    </article>
   }
 </div>
 
@@ -83,7 +114,7 @@
     }
     else
     {
-      post = loadedPost; 
+      post = loadedPost;
     }
 
     isLoading = false;
