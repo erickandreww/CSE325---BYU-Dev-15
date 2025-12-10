@@ -40,7 +40,7 @@
     --hh-surface-soft: #020617;
     --hh-border: #4F5563;
 
-    --hh-primary: #4f46e5;
+    --hh-primary: #3730a3;
     --hh-primary-soft: rgba(79, 70, 229, 0.18);
     --hh-primary-dark: #4338ca;
     --hh-accent: #fb923c;
@@ -140,6 +140,18 @@ a:focus,
 
 .btn-secondary {
     border-radius: 999px;
+}
+
+:root[data-theme="dark"] .btn-secondary {
+    text-decoration: none;
+    background-color: #374151;
+}
+
+:root[data-theme="dark"] .btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: #515A69;
+    border-color: #515A69;
+    text-decoration: underline;
 }
 
 .btn:focus,
@@ -719,6 +731,15 @@ main {
     color: var(--hh-muted);
 }
 
+.hh-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--hh-muted);
+}
+
 .hh-post-category-pill {
     display: inline-block;
     padding: 0.25rem 0.7rem;
@@ -728,8 +749,25 @@ main {
     font-weight: 500;
 }
 
+[data-theme='dark'] .hh-post-category-pill {
+    background-color: rgba(129, 140, 248, 0.38); /* stronger indigo */
+    color: #f9fafb; /* near-white text */
+}
+
 .hh-post-date {
     opacity: 0.9;
+}
+
+.hh-post-date,
+.hh-post-likes,
+.hh-post-likes-summary {
+    color: inherit;
+}
+
+/* Dark mode: keep meta text and like summary bright enough */
+[data-theme='dark'] .hh-post-meta,
+[data-theme='dark'] .hh-post-likes-summary {
+    color: #e5e7eb;           /* light gray on dark background */
 }
 
 /* Body text */
@@ -787,6 +825,43 @@ main {
 [data-theme='dark'] .hh-surface a:hover,
 [data-theme='dark'] .hh-surface a:focus {
     color: #e5e7ff;
+}
+
+/* ---------- Post details tweaks (layout + contrast) ---------- */
+
+.hh-post-details-card {
+    /* Let the details card be a bit wider than the forms,
+       so there’s less empty space and the image + text breathe better. */
+    max-width: 960px;
+}
+
+/* Make the category badge brighter / higher contrast in dark mode */
+[data-theme='dark'] .hh-post-details-card .badge.bg-primary-subtle.text-primary {
+    background-color: rgba(129, 140, 248, 0.32); /* stronger indigo glow */
+    color: #f9fafb; /* near-white text */
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.15rem 0.6rem;
+}
+
+/* Ensure meta text ("date • 0 likes", "X people like this") is readable */
+[data-theme='dark'] .hh-post-details-card .text-muted,
+[data-theme='dark'] .hh-post-details-card .small.text-muted {
+    color: var(--hh-muted);
+    opacity: 0.95; /* avoid Bootstrap’s low-opacity gray */
+}
+
+/* Like button: stronger outline + text color for contrast */
+[data-theme='dark'] .hh-post-details-card .btn-outline-primary {
+    border-color: var(--hh-primary);
+    color: #e5e7eb;
+}
+
+[data-theme='dark'] .hh-post-details-card .btn-outline-primary:hover,
+[data-theme='dark'] .hh-post-details-card .btn-outline-primary:focus {
+    background-color: var(--hh-primary);
+    border-color: var(--hh-primary);
+    color: #ffffff;
 }
 
 /* ---------- Blazor error UI (keep functional) ---------- */
