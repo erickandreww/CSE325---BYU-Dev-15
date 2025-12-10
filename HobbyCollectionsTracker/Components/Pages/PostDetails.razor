@@ -31,7 +31,7 @@
     else
     {
         @* Main details card for the post *@
-        <div class="hh-surface hh-section-card--narrow">
+        <div class="hh-surface hh-section-card--narrow hh-post-details-card">
             @* Show only if the post has an ImageUrl *@
             @if (!string.IsNullOrEmpty(post.ImageUrl))
             {
@@ -44,12 +44,20 @@
             <div class="card-body p-0">
                 <h2 class="card-title">@post.Title</h2>
 
-                <div class="d-flex flex-wrap align-items-center gap-2 mb-3 small text-muted">
-                    <span class="badge rounded-pill bg-primary-subtle text-primary">
-                        @post.Category?.Name
+                @* Category + date + like count line *@
+                <div class="hh-post-meta mb-3">
+                    @if (!string.IsNullOrWhiteSpace(post.Category?.Name))
+                    {
+                        <span class="hh-post-category-pill">
+                            @post.Category!.Name
+                        </span>
+                    }
+                    <span class="hh-post-date">
+                        @post.CreatedAt.ToLocalTime().ToString("f")
                     </span>
-                    <span>@post.CreatedAt.ToLocalTime().ToString("f")</span>
-                    <span class="text-muted">• @likeCount @((likeCount == 1) ? "like" : "likes")</span>
+                    <span class="hh-post-likes">
+                        • @likeCount @((likeCount == 1) ? "like" : "likes")
+                    </span>
                 </div>
 
                 <p class="card-text">@post.Description</p>
@@ -62,13 +70,13 @@
                                 @onclick="ToggleLike">
                             @(isLiked ? "♥ Liked" : "♡ Like")
                         </button>
-                        <span class="small text-muted">
+                        <span class="small hh-post-likes-summary">
                             @likeCount @((likeCount == 1) ? "person likes this" : "people like this")
                         </span>
                     }
                     else
                     {
-                        <span class="small text-muted">
+                        <span class="small hh-post-likes-summary">
                             @likeCount @((likeCount == 1) ? "like" : "likes") ·
                             <a href="Account/Login">Log in</a> to like this post.
                         </span>
