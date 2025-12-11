@@ -58,6 +58,15 @@
                                     @post.Category!.Name
                                 </span>
                             }
+
+                            @* Show the author of the post *@
+                            @if (!string.IsNullOrWhiteSpace(authorDisplayName))
+                            {
+                                <span class="hh-post-author">
+                                    by @authorDisplayName
+                                </span>
+                            }
+
                             <span class="hh-post-date">
                                 @post.CreatedAt.ToLocalTime().ToString("f")
                             </span>
@@ -118,6 +127,9 @@
     // Post loaded (non-nullable, we assign only when found)
     private Post post = new();
 
+    // Name or email of the user who created the post
+    private string? authorDisplayName;
+
     // Flags for UI state
     private bool isLoading = true;
     private bool notFound = false;
@@ -153,6 +165,20 @@
         {
             post = loadedPost;
             likeCount = post.Likes.Count;
+
+            // Load the creator's display name from Identity
+            if (!string.IsNullOrEmpty(post.UserId))
+            {
+                authorDisplayName = await Db.Users
+                    .Where(u => u.Id == post.UserId)
+                    .Select(u => u.UserName ?? u.Email)
+                    .FirstOrDefaultAsync();
+
+                if (string.IsNullOrWhiteSpace(authorDisplayName))
+                {
+                    authorDisplayName = "Unknown user";
+                }
+            }
 
             if (isAuthenticated && !string.IsNullOrEmpty(userId))
             {
