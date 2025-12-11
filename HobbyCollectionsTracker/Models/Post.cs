@@ -13,13 +13,13 @@ public class Post
   /// <summary>
   /// Post Title
   /// </summary>
-  [Required, StringLength(100, ErrorMessage = "Title must be 100 characters or less.")]
+  [Required, StringLength(45, ErrorMessage = "Title must be 45 characters or less.")]
   public string Title { get; set; } = string.Empty; //
 
   /// <summary>
   /// Post Description
   /// </summary>
-  [Required, StringLength(2000, ErrorMessage = "Description must be 2000 characters or less.")]
+  [Required, StringLength(1000, ErrorMessage = "Description must be 1000 characters or less.")]
   public string Description { get; set; } = string.Empty; //
 
   // Post image (that is optional)

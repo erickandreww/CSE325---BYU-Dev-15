@@ -864,6 +864,36 @@ main {
     color: #ffffff;
 }
 
+/* --- Generic helpers for long text ---------------------- */
+
+/* Break very long "words" (no spaces) like AAAAAAAA... */
+.hh-wrap-anywhere {
+    word-break: break-word;     /* for older browsers */
+    overflow-wrap: anywhere;    /* modern browsers */
+}
+
+/* Clamp text to a few lines (used on feed cards) */
+.hh-line-clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;   /* show 3 lines max */
+    overflow: hidden;
+}
+
+/* Post title / body should never force horizontal scroll */
+.hh-post-title,
+.hh-post-body {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* In tables (My Posts / Categories) let long text wrap instead of pushing width */
+.hh-table td.hh-table-title,
+.hh-table td.hh-table-category {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
 /* ---------- Blazor error UI (keep functional) ---------- */
 
 .blazor-error-boundary {

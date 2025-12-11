@@ -15,7 +15,7 @@ public class Category
   /// <summary>
   /// Category Name
   /// </summary>
-  [Required, StringLength(50, ErrorMessage = "Name must be 50 characters or less.")]
+  [Required, StringLength(20, ErrorMessage = "Name must be 20 characters or less.")]
   public string Name { get; set; } = string.Empty;
 
   /// <summary>

@@ -60,7 +60,9 @@
         @foreach (var category in categories)
         {
           <tr>
-            <td>@category.Name</td>
+            <td class="hh-table-category hh-wrap-anywhere">
+              @category.Name
+            </td>
             <td class="text-end">
               <a class="btn btn-sm btn-secondary"
                  href="/categories/edit/@category.Id">Edit</a>

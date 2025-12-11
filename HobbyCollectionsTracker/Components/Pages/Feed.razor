@@ -60,8 +60,8 @@
                    style="object-fit: cover; max-height: 240px; border-radius: 16px;" />
             }
 
-            <h5 class="card-title mb-1">
-              <a href="/posts/details/@post.Id">
+            <h5 class="card-title mb-1 hh-wrap-anywhere">
+              <a href="/posts/details/@post.Id" class="hh-wrap-anywhere">
                 @post.Title
               </a>
             </h5>
@@ -69,13 +69,6 @@
             <div class="text-muted small mb-2">
               @post.Category?.Name · @post.CreatedAt.ToLocalTime().ToString("g")
             </div>
-
-            @if (!string.IsNullOrWhiteSpace(post.Description))
-            {
-              <p class="card-text small mb-0">
-                @post.Description
-              </p>
-            }
           </div>
         }
       </div>
