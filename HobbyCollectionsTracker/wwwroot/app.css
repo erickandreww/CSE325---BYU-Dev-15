@@ -957,6 +957,23 @@ main {
     opacity: 1;
 }
 
+/* ---------- Feed card typography & contrast ---------- */
+
+/* Base (light theme) – keep it subtle, but readable */
+.hh-post-card-meta {
+    color: var(--hh-muted);
+}
+
+/* Dark mode – make the meta line and title bright enough for AA */
+:root[data-theme='dark'] .hh-post-card-meta {
+    color: #e5e7eb;      /* light gray on #020617, very high contrast */
+    opacity: 0.95;
+}
+
+:root[data-theme='dark'] .hh-post-card .card-title {
+    color: #f9fafb;      /* near-white for the title */
+}
+
 /* ---------- Blazor error UI (keep functional) ---------- */
 
 .blazor-error-boundary {
