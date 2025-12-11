@@ -886,7 +886,8 @@ main {
 .hh-line-clamp-3 {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;   /* show 3 lines max */
+    line-clamp: 3;        
+    -webkit-line-clamp: 3;  
     overflow: hidden;
 }
 
