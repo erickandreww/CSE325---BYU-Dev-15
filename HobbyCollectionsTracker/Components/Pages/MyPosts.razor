@@ -30,41 +30,47 @@
       }
       else {
         @* Table with all posts owned by the current user *@
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Created</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-          @foreach (var post in posts) 
-          {
-            <tr>
-              <td class="hh-table-title">
-                <a href="/posts/details/@post.Id" class="hh-wrap-anywhere">
-                  @post.Title
-                </a>
-              </td>
-              <td>@post.Category?.Name</td>
-              <td>@post.CreatedAt.ToLocalTime().ToString("g")</td>
-              <td class="text-end">
-                <a class="btn btn-sm btn-secondary" 
-                   href="/posts/edit/@post.Id">
-                  Edit
-                </a>
-                @* Delete removes the post after checking ownership again *@
-                <button class="btn btn-sm btn-danger ms-2"
-                        @onclick="() => DeletePost(post.Id)">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          }
-          </tbody>
-        </table>
+        <div class="table-responsive hh-my-posts-table">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            @foreach (var post in posts) 
+            {
+              <tr>
+                <td class="hh-table-category hh-wrap-anywhere">
+                  <a href="/posts/details/@post.Id">
+                    @post.Title
+                  </a>
+                </td>
+                <td class="hh-table-category hh-wrap-anywhere">
+                  @post.Category?.Name
+                </td>
+                <td class="hh-table-category hh-wrap-anywhere">
+                  @post.CreatedAt.ToLocalTime().ToString("g")
+                </td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-secondary" 
+                     href="/posts/edit/@post.Id">
+                    Edit
+                  </a>
+                  @* Delete removes the post after checking ownership again *@
+                  <button class="btn btn-sm btn-danger ms-2"
+                          @onclick="() => DeletePost(post.Id)">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        </div>
       }
     </div>
   

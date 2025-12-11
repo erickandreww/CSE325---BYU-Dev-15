@@ -894,6 +894,30 @@ main {
     overflow-wrap: anywhere;
 }
 
+/* ---------- My Posts table (responsive) ---------- */
+
+.hh-my-posts-table {
+    margin-top: 0.5rem;
+    overflow-x: auto;         
+}
+
+/* Give the table a reasonable minimum width so columns don’t collapse */
+.hh-my-posts-table table {
+    min-width: 520px;
+}
+
+/* On small screens, slightly reduce font/button sizes inside the table */
+@media (max-width: 768px) {
+    .hh-my-posts-table table {
+        font-size: 0.85rem;
+    }
+
+    .hh-my-posts-table .btn {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
+
 /* ---------- Blazor error UI (keep functional) ---------- */
 
 .blazor-error-boundary {
