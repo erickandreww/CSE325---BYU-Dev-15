@@ -56,5 +56,9 @@ pnpm-lock.yaml
 .DS_Store
 Thumbs.db
 
+# SQLite transient files
+*.db-shm
+*.db-wal
+
 ## Optional: ignore production secrets (keep dev only)
 #appsettings.Production.json
