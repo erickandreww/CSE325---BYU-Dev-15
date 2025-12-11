@@ -883,11 +883,10 @@ main {
 }
 
 /* Clamp text to a few lines (used on feed cards) */
-.hh-line-clamp-3 {
+hh-line-clamp-3 {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    line-clamp: 3;        
-    -webkit-line-clamp: 3;  
+    -webkit-line-clamp: 3; 
     overflow: hidden;
 }
 
