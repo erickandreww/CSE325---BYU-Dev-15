@@ -501,6 +501,10 @@ h2 {
     gap: 0.35rem;
 }
 
+[data-theme='dark'] .form-text {
+    color: var(--hh-muted);
+}
+
 /* Label styling */
 .hh-field-label {
     font-weight: 600;
@@ -761,6 +765,12 @@ main {
 .hh-post-date,
 .hh-post-likes,
 .hh-post-likes-summary {
+    color: black;
+}
+
+[data-theme='dark'] .hh-post-date,
+[data-theme='dark'] .hh-post-likes,
+[data-theme='dark'] .hh-post-likes-summary {
     color: inherit;
 }
 
@@ -916,6 +926,35 @@ main {
         padding: 0.2rem 0.6rem;
         font-size: 0.75rem;
     }
+}
+
+/* --- Fix floating-label inputs (Login / Register / Manage) in dark mode --- */
+
+/* Inputs inside floating labels: readable text + dark background */
+:root[data-theme="dark"] .form-floating > .form-control,
+:root[data-theme="dark"] .form-floating > .form-control:focus {
+    background-color: var(--hh-surface-soft);
+    color: #e5e7eb;
+}
+
+/* In dark mode, keep placeholder hidden so it doesn't overlap the label */
+:root[data-theme="dark"] .form-floating > .form-control::placeholder {
+    color: transparent;
+    opacity: 1; 
+}
+
+/* Default label color */
+:root[data-theme="dark"] .form-floating > label {
+    color: #e5e7eb;
+    opacity: 0.9;
+}
+
+/* Label when the input is focused, has value, or is autofilled */
+:root[data-theme="dark"] .form-floating > .form-control:focus ~ label,
+:root[data-theme="dark"] .form-floating > .form-control:not(:placeholder-shown) ~ label,
+:root[data-theme="dark"] .form-floating > .form-control:-webkit-autofill ~ label {
+    color: #c7d2fe !important;   /* light indigo, good contrast */
+    opacity: 1;
 }
 
 /* ---------- Blazor error UI (keep functional) ---------- */
