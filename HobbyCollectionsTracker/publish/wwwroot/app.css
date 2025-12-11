@@ -501,6 +501,10 @@ h2 {
     gap: 0.35rem;
 }
 
+[data-theme='dark'] .form-text {
+    color: var(--hh-muted);
+}
+
 /* Label styling */
 .hh-field-label {
     font-weight: 600;
@@ -761,6 +765,12 @@ main {
 .hh-post-date,
 .hh-post-likes,
 .hh-post-likes-summary {
+    color: black;
+}
+
+[data-theme='dark'] .hh-post-date,
+[data-theme='dark'] .hh-post-likes,
+[data-theme='dark'] .hh-post-likes-summary {
     color: inherit;
 }
 
@@ -862,6 +872,107 @@ main {
     background-color: var(--hh-primary);
     border-color: var(--hh-primary);
     color: #ffffff;
+}
+
+/* --- Generic helpers for long text ---------------------- */
+
+/* Break very long "words" (no spaces) like AAAAAAAA... */
+.hh-wrap-anywhere {
+    word-break: break-word;     /* for older browsers */
+    overflow-wrap: anywhere;    /* modern browsers */
+}
+
+/* Clamp text to a few lines (used on feed cards) */
+.hh-line-clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-clamp: 3;        
+    -webkit-line-clamp: 3;  
+    overflow: hidden;
+}
+
+/* Post title / body should never force horizontal scroll */
+.hh-post-title,
+.hh-post-body {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* In tables (My Posts / Categories) let long text wrap instead of pushing width */
+.hh-table td.hh-table-title,
+.hh-table td.hh-table-category {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* ---------- My Posts table (responsive) ---------- */
+
+.hh-my-posts-table {
+    margin-top: 0.5rem;
+    overflow-x: auto;         
+}
+
+/* Give the table a reasonable minimum width so columns don’t collapse */
+.hh-my-posts-table table {
+    min-width: 520px;
+}
+
+/* On small screens, slightly reduce font/button sizes inside the table */
+@media (max-width: 768px) {
+    .hh-my-posts-table table {
+        font-size: 0.85rem;
+    }
+
+    .hh-my-posts-table .btn {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* --- Fix floating-label inputs (Login / Register / Manage) in dark mode --- */
+
+/* Inputs inside floating labels: readable text + dark background */
+:root[data-theme="dark"] .form-floating > .form-control,
+:root[data-theme="dark"] .form-floating > .form-control:focus {
+    background-color: var(--hh-surface-soft);
+    color: #e5e7eb;
+}
+
+/* In dark mode, keep placeholder hidden so it doesn't overlap the label */
+:root[data-theme="dark"] .form-floating > .form-control::placeholder {
+    color: transparent;
+    opacity: 1; 
+}
+
+/* Default label color */
+:root[data-theme="dark"] .form-floating > label {
+    color: #e5e7eb;
+    opacity: 0.9;
+}
+
+/* Label when the input is focused, has value, or is autofilled */
+:root[data-theme="dark"] .form-floating > .form-control:focus ~ label,
+:root[data-theme="dark"] .form-floating > .form-control:not(:placeholder-shown) ~ label,
+:root[data-theme="dark"] .form-floating > .form-control:-webkit-autofill ~ label {
+    color: #c7d2fe !important;   /* light indigo, good contrast */
+    opacity: 1;
+}
+
+/* ---------- Feed card typography & contrast ---------- */
+
+/* Base (light theme) – keep it subtle, but readable */
+.hh-post-card-meta {
+    color: var(--hh-muted);
+}
+
+/* Dark mode – make the meta line and title bright enough for AA */
+:root[data-theme='dark'] .hh-post-card-meta {
+    color: #e5e7eb;      /* light gray on #020617, very high contrast */
+    opacity: 0.95;
+}
+
+:root[data-theme='dark'] .hh-post-card .card-title {
+    color: #f9fafb;      /* near-white for the title */
 }
 
 /* ---------- Blazor error UI (keep functional) ---------- */
